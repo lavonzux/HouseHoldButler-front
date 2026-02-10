@@ -1,13 +1,15 @@
 // ============================================
-// Dashboard.jsx - 總覽頁面
+// Dashboard.tsx - 總覽頁面
 // ============================================
 // 
-// 使用的 Ant Design 元件：
-// - Card, Row, Col, Statistic, Badge, Tag, Button, Select
-// - @ant-design/icons 圖示
+// TypeScript 學習重點：
+// 1. React.FC<Props> 定義函數元件型別
+// 2. 使用泛型 <T> 來定義可重用的型別
+// 3. 事件處理函式的型別
+// 4. 使用 useMemo 時的型別推斷
 // ============================================
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { 
   Card, 
   Row, 
@@ -32,18 +34,54 @@ import {
   ShoppingCartOutlined,
   RobotOutlined,
 } from '@ant-design/icons';
+import type { DashboardProps, InventoryItem } from './types';
 import { mockInventory } from './mockData';
-import { statusConfig } from './theme';
 
 const { Title, Text } = Typography;
 
-export default function Dashboard({ onNavigate, onSelectItem, onAddNew }) {
-  // 篩選緊急和警告物品
-  const criticalItems = mockInventory.filter(i => i.status === 'critical');
-  const warningItems = mockInventory.filter(i => i.status === 'warning');
+/**
+ * 統計卡片資料介面
+ */
+interface StatItem {
+  title: string;
+  value: number | string;
+  icon: React.ReactNode;
+  color: string;
+  prefix?: string;
+}
+
+/**
+ * 快速操作項目介面
+ */
+interface QuickAction {
+  icon: React.ReactNode;
+  label: string;
+  onClick?: () => void;
+}
+
+/**
+ * Dashboard 元件
+ * 使用 React.FC<Props> 定義函數元件的型別
+ */
+const Dashboard: React.FC<DashboardProps> = ({ 
+  onNavigate,
+  onSelectItem,
+  onAddNew,
+}) => {
+  
+  // 使用 useMemo 優化效能，TypeScript 會自動推斷回傳型別
+  const criticalItems = useMemo<InventoryItem[]>(
+    () => mockInventory.filter(item => item.status === 'critical'),
+    []
+  );
+  
+  const warningItems = useMemo<InventoryItem[]>(
+    () => mockInventory.filter(item => item.status === 'warning'),
+    []
+  );
 
   // 統計卡片資料
-  const stats = [
+  const stats: StatItem[] = [
     { 
       title: '總物品數', 
       value: mockInventory.length, 
@@ -72,12 +110,20 @@ export default function Dashboard({ onNavigate, onSelectItem, onAddNew }) {
   ];
 
   // 快速操作
-  const quickActions = [
+  const quickActions: QuickAction[] = [
     { icon: <EditOutlined />, label: '記錄消耗' },
     { icon: <ScanOutlined />, label: '掃描條碼' },
     { icon: <ShoppingCartOutlined />, label: '購物清單' },
     { icon: <RobotOutlined />, label: 'AI 建議' },
   ];
+
+  /**
+   * 處理物品點擊
+   * 明確標註參數型別
+   */
+  const handleItemClick = (item: InventoryItem): void => {
+    onSelectItem(item);
+  };
 
   return (
     <div>
@@ -128,9 +174,9 @@ export default function Dashboard({ onNavigate, onSelectItem, onAddNew }) {
             ) : (
               <List
                 dataSource={criticalItems}
-                renderItem={item => (
+                renderItem={(item: InventoryItem) => (
                   <List.Item 
-                    onClick={() => onSelectItem(item)}
+                    onClick={() => handleItemClick(item)}
                     style={{ cursor: 'pointer' }}
                     extra={<Tag color="red">補貨</Tag>}
                   >
@@ -158,9 +204,9 @@ export default function Dashboard({ onNavigate, onSelectItem, onAddNew }) {
           >
             <List
               dataSource={warningItems}
-              renderItem={item => (
+              renderItem={(item: InventoryItem) => (
                 <List.Item 
-                  onClick={() => onSelectItem(item)}
+                  onClick={() => handleItemClick(item)}
                   style={{ cursor: 'pointer' }}
                   extra={<Tag color="orange">注意</Tag>}
                 >
@@ -182,7 +228,14 @@ export default function Dashboard({ onNavigate, onSelectItem, onAddNew }) {
                 <Col span={12} key={index}>
                   <Button 
                     block 
-                    style={{ height: 80, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
+                    onClick={action.onClick}
+                    style={{ 
+                      height: 80, 
+                      display: 'flex', 
+                      flexDirection: 'column', 
+                      alignItems: 'center', 
+                      justifyContent: 'center',
+                    }}
                   >
                     <div style={{ fontSize: 24, marginBottom: 4 }}>{action.icon}</div>
                     <span>{action.label}</span>
@@ -208,7 +261,6 @@ export default function Dashboard({ onNavigate, onSelectItem, onAddNew }) {
               />
             }
           >
-            {/* 這裡可以整合 @ant-design/charts 或其他圖表庫 */}
             <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-around', height: 160 }}>
               {['一', '二', '三', '四', '五', '六', '日'].map((day, index) => (
                 <div key={day} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
@@ -217,7 +269,7 @@ export default function Dashboard({ onNavigate, onSelectItem, onAddNew }) {
                       width: 32, 
                       height: `${30 + Math.random() * 80}px`, 
                       backgroundColor: index === 3 ? '#1677ff' : '#f0f0f0', 
-                      borderRadius: '4px 4px 0 0' 
+                      borderRadius: '4px 4px 0 0',
                     }} 
                   />
                   <Text type="secondary">{day}</Text>
@@ -229,4 +281,6 @@ export default function Dashboard({ onNavigate, onSelectItem, onAddNew }) {
       </Row>
     </div>
   );
-}
+};
+
+export default Dashboard;

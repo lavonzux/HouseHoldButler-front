@@ -1,20 +1,20 @@
 // ============================================
-// theme.js - Ant Design Theme Configuration
+// theme.ts - Ant Design 主題配置
 // ============================================
 // 
-// 這個檔案定義了 Ant Design 的主題配置
-// 可以在 ConfigProvider 中使用這些設定來自訂主題
-//
-// 使用方式：
-// import { ConfigProvider } from 'antd';
-// import { themeConfig } from './theme';
-// 
-// <ConfigProvider theme={themeConfig}>
-//   <App />
-// </ConfigProvider>
+// TypeScript 學習重點：
+// 1. 使用 as const 斷言來建立字面量型別
+// 2. 從 antd 匯入型別定義
+// 3. 使用 satisfies 來檢查型別同時保留推斷
 // ============================================
 
-// Ant Design 5.x 主題配置
+import type { ThemeConfig } from 'antd';
+import type { StatusConfigMap } from './types';
+
+/**
+ * Ant Design 5.x 主題配置
+ * 使用 satisfies 確保型別正確，同時保留具體的值推斷
+ */
 export const themeConfig = {
   token: {
     // 品牌色
@@ -42,10 +42,13 @@ export const themeConfig = {
       darkItemSelectedBg: '#1677ff',
     },
   },
-};
+} satisfies ThemeConfig;
 
-// 狀態配置 - 用於庫存狀態顯示
-export const statusConfig = {
+/**
+ * 狀態配置
+ * 用於根據庫存狀態顯示不同的顏色和標籤
+ */
+export const statusConfig: StatusConfigMap = {
   critical: { 
     label: '緊急', 
     color: 'error',
@@ -66,6 +69,22 @@ export const statusConfig = {
   },
 };
 
-// 側邊欄寬度
-export const SIDER_WIDTH = 200;
-export const SIDER_COLLAPSED_WIDTH = 80;
+/**
+ * 側邊欄寬度常數
+ * 使用 as const 確保這些值是字面量型別而不是 number
+ */
+export const SIDER_WIDTH = 200 as const;
+export const SIDER_COLLAPSED_WIDTH = 80 as const;
+
+/**
+ * 頁面標題映射
+ * 使用 Record 型別來定義鍵值對
+ */
+export const VIEW_TITLES: Record<string, string> = {
+  dashboard: '總覽',
+  inventory: '庫存清單',
+  detail: '物品詳情',
+  reminders: '提醒事項',
+  budget: '預算追蹤',
+  settings: '設定',
+};
