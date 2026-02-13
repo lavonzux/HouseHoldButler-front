@@ -10,7 +10,7 @@ import {
   Divider, 
   Typography,
 } from 'antd';
-import type { NotificationSettings } from './types';
+import type { NotificationSettings } from '../types';
 
 const { Title, Text } = Typography;
 

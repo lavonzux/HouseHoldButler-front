@@ -167,12 +167,12 @@ export interface InventoryProps {
 }
 
 /**
- * ItemDetail 元件的 Props
+ * ItemDetail 元件的 Props (待刪除)
  */
-export interface ItemDetailProps {
-  item: InventoryItem;
-  onBack: () => void;
-}
+// export interface ItemDetailProps {
+//   item: InventoryItem;
+//   onBack: () => void;
+// }
 
 /**
  * AddItemModal 元件的 Props

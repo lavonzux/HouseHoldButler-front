@@ -32,21 +32,24 @@ import {
   AppstoreOutlined, 
   BarsOutlined,
 } from '@ant-design/icons';
-import type { InventoryProps, InventoryItem, ViewMode } from './types';
-import { mockInventory, mockCategories, mockLocations } from './mockData';
-import { statusConfig } from './theme';
+import type { InventoryProps, InventoryItem, ViewMode } from '../types';
+import { mockInventory, mockCategories, mockLocations } from '../mockData';
+import { useNavigate } from 'react-router-dom';
+import { statusConfig } from '../theme';
 
 const { Title, Text } = Typography;
 
 /**
  * Inventory 元件
  */
-const Inventory: React.FC<InventoryProps> = ({ onSelectItem, onAddNew }) => {
+const Inventory: React.FC = () => {
   // 使用泛型明確指定 state 的型別
   const [search, setSearch] = useState<string>('');
   const [category, setCategory] = useState<string>('全部');
   const [location, setLocation] = useState<string>('全部');
   const [viewMode, setViewMode] = useState<ViewMode>('table');
+
+  const navigate = useNavigate();
 
   /**
    * 篩選後的資料
@@ -152,6 +155,18 @@ const Inventory: React.FC<InventoryProps> = ({ onSelectItem, onAddNew }) => {
   const handleViewModeChange = (value: string | number): void => {
     setViewMode(value as ViewMode);
   };
+  
+  // 點擊物品 → 跳轉詳情頁
+  const handleSelectItem = (item: InventoryItem) => {
+    navigate(`/inventory/${item.id}`);
+  };
+
+  // 新增物品按鈕
+  const handleAddNew = () => {
+    // 同 Dashboard，可選擇跳轉或之後用 Modal
+    alert('新增物品功能尚未實作獨立頁面');
+    // 或：navigate('/add-item');
+  };
 
   return (
     <div>
@@ -161,7 +176,7 @@ const Inventory: React.FC<InventoryProps> = ({ onSelectItem, onAddNew }) => {
           <Title level={2} style={{ margin: 0 }}>庫存清單</Title>
           <Text type="secondary">共 {mockInventory.length} 項物品</Text>
         </div>
-        <Button type="primary" icon={<PlusOutlined />} onClick={onAddNew}>
+        <Button type="primary" icon={<PlusOutlined />} onClick={handleAddNew}>
           新增物品
         </Button>
       </div>
@@ -206,7 +221,7 @@ const Inventory: React.FC<InventoryProps> = ({ onSelectItem, onAddNew }) => {
             dataSource={filteredData}
             rowKey="id"
             onRow={(record) => ({
-              onClick: () => onSelectItem(record),
+              onClick: () => handleSelectItem(record),
               style: { cursor: 'pointer' },
             })}
             pagination={{ pageSize: 10 }}
@@ -221,7 +236,7 @@ const Inventory: React.FC<InventoryProps> = ({ onSelectItem, onAddNew }) => {
             <Col xs={24} sm={12} md={8} lg={6} key={item.id}>
               <Card 
                 hoverable 
-                onClick={() => onSelectItem(item)}
+                onClick={() => handleSelectItem(item)}
                 style={{ height: '100%' }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
