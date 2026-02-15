@@ -34,8 +34,9 @@ import {
   ShoppingCartOutlined,
   RobotOutlined,
 } from '@ant-design/icons';
-import type { DashboardProps, InventoryItem } from './types';
-import { mockInventory } from './mockData';
+import type { DashboardProps, InventoryItem } from '../types';
+import { useNavigate } from 'react-router-dom';
+import { mockInventory } from '../mockData';
 
 const { Title, Text } = Typography;
 
@@ -63,11 +64,11 @@ interface QuickAction {
  * Dashboard 元件
  * 使用 React.FC<Props> 定義函數元件的型別
  */
-const Dashboard: React.FC<DashboardProps> = ({ 
-  onNavigate,
-  onSelectItem,
-  onAddNew,
-}) => {
+const Dashboard: React.FC = () => { 
+  // onNavigate,
+  // onSelectItem,
+  // onAddNew,
+  const navigate = useNavigate();
   
   // 使用 useMemo 優化效能，TypeScript 會自動推斷回傳型別
   const criticalItems = useMemo<InventoryItem[]>(
@@ -122,7 +123,17 @@ const Dashboard: React.FC<DashboardProps> = ({
    * 明確標註參數型別
    */
   const handleItemClick = (item: InventoryItem): void => {
-    onSelectItem(item);
+    navigate(`/inventory/${item.id}`);
+  };
+
+  // 新增物品 → 目前可跳轉到一個新增頁面，或之後實作 Modal
+  const handleAddNew = () => {
+    // 選項1：跳轉到新增頁面（建議未來建立 /add-item 路由）
+    // navigate('/add-item');
+
+    // 選項2：如果想保持 Modal 方式，可在這裡控制狀態
+    // 但因為 Modal 通常放在較高層，這裡先留空或 alert 提示
+    alert('新增物品功能尚未實作獨立頁面');
   };
 
   return (
@@ -133,7 +144,7 @@ const Dashboard: React.FC<DashboardProps> = ({
           <Title level={2} style={{ margin: 0 }}>總覽</Title>
           <Text type="secondary">2026年2月5日 星期四</Text>
         </div>
-        <Button type="primary" icon={<PlusOutlined />} onClick={onAddNew}>
+        <Button type="primary" icon={<PlusOutlined />} onClick={handleAddNew}>
           新增物品
         </Button>
       </div>

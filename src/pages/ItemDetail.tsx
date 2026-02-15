@@ -24,16 +24,39 @@ import {
 } from 'antd';
 import type { TimelineItemProps } from 'antd';
 import { ArrowLeftOutlined, ShoppingCartOutlined } from '@ant-design/icons';
-import type { ItemDetailProps, ConsumptionRecord } from './types';
-import { statusConfig } from './theme';
-import { mockConsumptionHistory } from './mockData';
+import type { InventoryItem, ConsumptionRecord } from '../types';
+import { statusConfig } from '../theme';
+import { mockConsumptionHistory, mockInventory } from '../mockData';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const { Title, Text } = Typography;
 
 /**
  * ItemDetail 元件
  */
-const ItemDetail: React.FC<ItemDetailProps> = ({ item, onBack }) => {
+const ItemDetail: React.FC = () => {
+  const { id } = useParams<{ id: string }>(); // 從 URL 參數獲取物品 ID
+  // 根據 id 找到對應的物品（使用 useMemo 避免重複計算）
+  const item = React.useMemo(() => {
+    return mockInventory.find(i => i.id === Number(id));
+  }, [id]);
+
+  // 如果找不到物品，顯示錯誤或跳轉
+  if (!item) {
+    return (
+      <div style={{ padding: 24, textAlign: 'center' }}>
+        <Title level={3}>找不到該物品</Title>
+        <Button onClick={() => navigate('/inventory')}>返回庫存清單</Button>
+      </div>
+    );
+  }
+  const navigate = useNavigate();
+
+  // 返回上一頁
+  const handleBack = () => {
+    navigate(-1);           // 或 navigate('/inventory')
+  };
+
   // 使用傳入的 item.quantity 作為初始值
   const [quantity, setQuantity] = useState<number>(item.quantity);
 
@@ -89,7 +112,7 @@ const ItemDetail: React.FC<ItemDetailProps> = ({ item, onBack }) => {
       <Button 
         type="link" 
         icon={<ArrowLeftOutlined />} 
-        onClick={onBack} 
+        onClick={handleBack} 
         style={{ padding: 0, marginBottom: 16 }}
       >
         返回列表
