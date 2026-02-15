@@ -52,8 +52,9 @@ const Landing: React.FC = () => {
           boxShadow: '0 1px 4px rgba(0,21,41,0.08)',
         }}
       >
-        <div style={{ fontSize: 24, fontWeight: 'bold', color: '#1677ff' }}>
-          AI 管家
+        <div style={{ fontSize: 24, fontWeight: 'bold', color: '#1677ff', display: 'flex', alignItems: 'center', gap: 12 }}>
+          <img src="/houseHoldButlerLogo.png" alt="AI 管家 Logo" style={{ height: 32, width: 'auto', display: 'block' }} />
+          AI 智慧家庭管家
         </div>
 
         <Space>
@@ -93,7 +94,7 @@ const Landing: React.FC = () => {
           }}
         >
           <source 
-            src="https://www.pexels.com/download/video/6197061/" 
+            src="https://www.pexels.com/download/video/4121744/" 
             type="video/mp4" 
           />
           Your browser does not support the video tag.
@@ -154,7 +155,7 @@ const Landing: React.FC = () => {
             type="primary"
             size="large"
             icon={<ArrowRightOutlined />}
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate('/login')}
             style={{ 
               height: 56, 
               fontSize: 20, 
