@@ -1,5 +1,5 @@
 // src/pages/Login.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Image, Card, Form, Input, Button, Typography, Divider, Space, Checkbox, 
   message 
@@ -14,6 +14,10 @@ const { Title, Text, Link } = Typography;
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth'});
+  }, []);
 
   const onFinish = (values: { username: string; password: string; remember?: boolean }) => {
     setLoading(true);
