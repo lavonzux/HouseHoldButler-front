@@ -1,5 +1,5 @@
 // src/pages/Register.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Card,
   Form,
@@ -27,10 +27,6 @@ const Register: React.FC = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [agreed, setAgreed] = useState(false);
-
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);   // 空的 dependency array → 只在元件 mount 時執行一次
 
   const onFinish = (values: {
     email: string;
