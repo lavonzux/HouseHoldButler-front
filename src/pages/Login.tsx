@@ -62,7 +62,8 @@ const Login: React.FC = () => {
       >
         {/* 標題區 */}
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, color: '#1677ff' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, color: '#1677ff', cursor: 'pointer' }}
+               onClick={() => navigate('/')}>
             <img src="/houseHoldButlerLogo.png" alt="AI 管家 Logo" style={{ height: 40, width: 'auto'}} />
             <Title level={2} style={{ margin: 0, color: '#1677ff' }}>
               AI 智慧家庭管家
