@@ -12,7 +12,6 @@ import {
   message,
 } from 'antd';
 import {
-  UserOutlined,
   LockOutlined,
   MailOutlined,
   PhoneOutlined,
@@ -99,7 +98,8 @@ const Register: React.FC = () => {
       >
         {/* 標題區 */}
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, color: '#1677ff' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, color: '#1677ff', cursor: 'pointer' }}
+               onClick={()=> navigate('/')}     >
             <img
               src="/houseHoldButlerLogo.png"
               alt="AI 管家 Logo"

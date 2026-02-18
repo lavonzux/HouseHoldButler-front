@@ -9,7 +9,7 @@
 // 4. 使用 useMemo 時的型別推斷
 // ============================================
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { 
   Card, 
   Row, 
@@ -34,9 +34,10 @@ import {
   ShoppingCartOutlined,
   RobotOutlined,
 } from '@ant-design/icons';
-import type { DashboardProps, InventoryItem } from '../types';
+import type { AddItemFormData, InventoryItem } from '../types';
 import { useNavigate } from 'react-router-dom';
 import { mockInventory } from '../mockData';
+import AddItemModal from '../components/component/AddItemModal';
 
 const { Title, Text } = Typography;
 
@@ -126,14 +127,23 @@ const Dashboard: React.FC = () => {
     navigate(`/inventory/${item.id}`);
   };
 
-  // 新增物品 → 目前可跳轉到一個新增頁面，或之後實作 Modal
-  const handleAddNew = () => {
-    // 選項1：跳轉到新增頁面（建議未來建立 /add-item 路由）
-    // navigate('/add-item');
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-    // 選項2：如果想保持 Modal 方式，可在這裡控制狀態
-    // 但因為 Modal 通常放在較高層，這裡先留空或 alert 提示
-    alert('新增物品功能尚未實作獨立頁面');
+  // 新增物品
+  const handleAddNew = () => {
+    setIsModalOpen(true);
+  };
+
+  // 關閉新增物品 modal
+  const handleClose = () => {
+    setIsModalOpen(false);
+  };
+
+  // 提交新增物品 modal
+  const handleSubmit = (values: AddItemFormData) => {
+    console.log('新增：', values);
+    setIsModalOpen(false);
+    // 未來這裡應該要更新 mockInventory 或 call API
   };
 
   return (
@@ -146,7 +156,7 @@ const Dashboard: React.FC = () => {
         </div>
         <Button type="primary" icon={<PlusOutlined />} onClick={handleAddNew}>
           新增物品
-        </Button>
+        </Button>        
       </div>
 
       {/* 統計卡片 */}
@@ -290,6 +300,13 @@ const Dashboard: React.FC = () => {
           </Card>
         </Col>
       </Row>
+      
+      {/* 新增物品 Modal */}
+      <AddItemModal
+        open={isModalOpen}
+        onClose={handleClose}
+        onSubmit={handleSubmit}
+      />
     </div>
   );
 };
