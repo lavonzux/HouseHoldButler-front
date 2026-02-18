@@ -12,7 +12,6 @@ import {
   message,
 } from 'antd';
 import {
-  UserOutlined,
   LockOutlined,
   MailOutlined,
   PhoneOutlined,

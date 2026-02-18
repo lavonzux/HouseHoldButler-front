@@ -1,6 +1,6 @@
 // src/App.tsx
 import React, {useEffect} from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import AuthLayout from './components/Layout/AuthLayout';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
@@ -11,14 +11,16 @@ import Reminders from './pages/Reminders';
 import Budget from './pages/Budget';
 import Settings from './pages/Settings';
 import Register from './pages/Register';
+import NotFound from './pages/NotFound';
 
 const App: React.FC = () => {
+  const location = useLocation();
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth'});
-  }, []); // 空的 dependency array → 只在元件 mount 時執行一次
+  }, [location.pathname]); // 每次路徑改變時執行
 
   return (
-    <BrowserRouter>
       <Routes>
         {/* 公開首頁 */}
         <Route path="/" element={<Landing />} />
@@ -32,13 +34,14 @@ const App: React.FC = () => {
           <Route path="/inventory/:id" element={<ItemDetail />} />
           <Route path="/reminders" element={<Reminders />} />
           <Route path="/budget" element={<Budget />} />
-          <Route path="/settings" element={<Settings />} />
-
-          {/* 預設 404 跳轉到 dashboard */}
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/settings" element={<Settings />} />          
         </Route>
+        {/* 明確的 404 頁面路由 */}
+        <Route path="/notFound" element={<NotFound />} />
+
+        {/* 所有未匹配路由 → 導向 404 */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
-    </BrowserRouter>
   );
 };
 

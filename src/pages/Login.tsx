@@ -1,7 +1,7 @@
 // src/pages/Login.tsx
 import React, { useState } from 'react';
 import { 
-  Image, Card, Form, Input, Button, Typography, Divider, Space, Checkbox, 
+  Card, Form, Input, Button, Typography, Divider, Space, Checkbox, 
   message 
 } from 'antd';
 import { 
