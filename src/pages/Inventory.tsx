@@ -32,10 +32,11 @@ import {
   AppstoreOutlined, 
   BarsOutlined,
 } from '@ant-design/icons';
-import type { InventoryProps, InventoryItem, ViewMode } from '../types';
+import type { InventoryItem, ViewMode, AddItemFormData } from '../types';
 import { mockInventory, mockCategories, mockLocations } from '../mockData';
 import { useNavigate } from 'react-router-dom';
 import { statusConfig } from '../theme';
+import AddItemModal from '../components/component/AddItemModal';
 
 const { Title, Text } = Typography;
 
@@ -161,11 +162,22 @@ const Inventory: React.FC = () => {
     navigate(`/inventory/${item.id}`);
   };
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
   // 新增物品按鈕
   const handleAddNew = () => {
-    // 同 Dashboard，可選擇跳轉或之後用 Modal
-    alert('新增物品功能尚未實作獨立頁面');
-    // 或：navigate('/add-item');
+    setIsModalOpen(true);
+  };
+
+  // 關閉新增物品 modal
+  const handleClose = () => {
+    setIsModalOpen(false);
+  };
+
+  // 提交新增物品 modal
+  const handleSubmit = (values: AddItemFormData) => {
+    console.log('新增：', values);
+    setIsModalOpen(false);
+    // 未來這裡應該要更新 mockInventory 或 call API
   };
 
   return (
@@ -271,6 +283,13 @@ const Inventory: React.FC = () => {
           ))}
         </Row>
       )}
+
+      {/* 新增物品 Modal */}
+      <AddItemModal 
+        open={isModalOpen}
+        onClose={handleClose}      
+        onSubmit={handleSubmit}
+      />
     </div>
   );
 };

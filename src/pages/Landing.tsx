@@ -209,7 +209,7 @@ const Landing: React.FC = () => {
       {/* Footer */}
       <div style={{ padding: '60px 40px', textAlign: 'center', background: '#001529', color: 'white' }}>
         <Title level={4} style={{ color: 'white' }}>
-          AI 管家 - 讓家庭生活更聰明
+          AI 智慧家庭管家 - 讓家庭生活更聰明
         </Title>
         <Text style={{ color: 'rgba(255,255,255,0.65)' }}>
           © 2026 AI HouseKeeper. All rights reserved.

@@ -24,8 +24,8 @@ import {
   Typography,
 } from 'antd';
 // import type { FormInstance } from 'antd';
-import type { AddItemModalProps, AddItemFormData } from './types';
-import { mockCategories, mockLocations, unitOptions } from './mockData';
+import type { AddItemModalProps, AddItemFormData } from '../../types';
+import { mockCategories, mockLocations, unitOptions } from '../../mockData';
 
 const { Text } = Typography;
 
