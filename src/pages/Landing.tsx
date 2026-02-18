@@ -1,5 +1,5 @@
 // src/pages/Landing.tsx
-import React from 'react';
+import React, { useRef } from 'react';
 import { Button, Card, Row, Col, Typography, Space } from 'antd';
 import { LoginOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
@@ -32,6 +32,19 @@ const features = [
 const Landing: React.FC = () => {
   const navigate = useNavigate();
 
+  // 新增：用來指向「核心功能」區塊
+  const featuresRef = useRef<HTMLDivElement>(null);
+
+  // 新增：處理平滑滾動的函式
+  const scrollToFeatures = () => {
+    if (featuresRef.current) {
+      featuresRef.current.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'    // 讓區塊頂部對齊視窗頂部
+      });
+    }
+  };
+
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f0f4ff 0%, #e6f0ff 100%)' }}>
       {/* Navbar */}
@@ -58,7 +71,7 @@ const Landing: React.FC = () => {
         </div>
 
         <Space>
-          <Button type="link">功能特色</Button>
+          <Button type="link" onClick={scrollToFeatures}>功能特色</Button>
           <Button type="link">價格方案</Button>
           <Button type="primary" icon={<LoginOutlined />} onClick={() => navigate('/dashboard')}>
             登入
@@ -170,7 +183,7 @@ const Landing: React.FC = () => {
       </div>
 
       {/* Features */}
-      <div style={{ padding: '80px 40px', background: 'white' }}>
+      <div id="features" ref={featuresRef} style={{ padding: '80px 40px', background: 'white', scrollMarginTop: '80px' }}>
         <Title level={2} style={{ textAlign: 'center', marginBottom: 60 }}>
           核心功能
         </Title>

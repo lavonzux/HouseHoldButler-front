@@ -1,5 +1,5 @@
 // src/App.tsx
-import React from 'react';
+import React, {useEffect} from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import AuthLayout from './components/Layout/AuthLayout';
 import Landing from './pages/Landing';
@@ -13,6 +13,10 @@ import Settings from './pages/Settings';
 import Register from './pages/Register';
 
 const App: React.FC = () => {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth'});
+  }, []); // 空的 dependency array → 只在元件 mount 時執行一次
+
   return (
     <BrowserRouter>
       <Routes>
