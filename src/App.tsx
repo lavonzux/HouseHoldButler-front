@@ -10,6 +10,7 @@ import ItemDetail from './pages/ItemDetail';
 import Reminders from './pages/Reminders';
 import Budget from './pages/Budget';
 import Settings from './pages/Settings';
+import Register from './pages/Register';
 
 const App: React.FC = () => {
   return (
@@ -18,6 +19,7 @@ const App: React.FC = () => {
         {/* 公開首頁 */}
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
         {/* 需要登入的頁面（目前模擬全部開放） */}
         <Route element={<AuthLayout />}>
