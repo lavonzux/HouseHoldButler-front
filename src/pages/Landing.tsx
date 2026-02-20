@@ -96,6 +96,8 @@ const Landing: React.FC = () => {
           muted
           loop
           playsInline
+          preload="auto"
+          poster="/videos/heroPoster.jpg"  // 加入 poster 圖片，使用者會先看到清晰的靜態圖，影片載入後自然銜接，提升載入體驗
           style={{
             position: 'absolute',
             top: 0,
