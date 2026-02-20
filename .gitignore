@@ -3,6 +3,9 @@ node_modules/
 .pnp
 .pnp.js
 
+# --- Build Tools ---
+pnpm-lock.yaml
+
 # --- Build Outputs ---
 dist/
 dist-ssr/
