@@ -73,7 +73,7 @@ const Landing: React.FC = () => {
         <Space>
           <Button type="link" onClick={scrollToFeatures}>功能特色</Button>
           <Button type="link">價格方案</Button>
-          <Button type="primary" icon={<LoginOutlined />} onClick={() => navigate('/dashboard')}>
+          <Button type="primary" icon={<LoginOutlined />} onClick={() => navigate('/login')}>
             登入
           </Button>
         </Space>
