@@ -1,17 +1,17 @@
 // src/App.tsx
 import React, {useEffect} from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
-import AuthLayout from './components/Layout/AuthLayout';
-import Landing from './pages/Landing';
-import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
-import Inventory from './pages/Inventory';
-import ItemDetail from './pages/ItemDetail';
-import Reminders from './pages/Reminders';
-import Budget from './pages/Budget';
-import Settings from './pages/Settings';
-import Register from './pages/Register';
-import NotFound from './pages/NotFound';
+import AuthLayout from '@components/Layout/AuthLayout';
+import Landing from '@pages/Landing';
+import Login from '@pages/Login';
+import Dashboard from '@pages/Dashboard';
+import Inventory from '@pages/Inventory';
+import ItemDetail from '@pages/ItemDetail';
+import Reminders from '@pages/Reminders';
+import Budget from '@pages/Budget';
+import Settings from '@pages/Settings';
+import Register from '@pages/Register';
+import NotFound from '@pages/NotFound';
 
 const App: React.FC = () => {
   const location = useLocation();

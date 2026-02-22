@@ -8,7 +8,7 @@ import {
   LockOutlined, UserOutlined, GoogleOutlined, FacebookOutlined 
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { authApi } from '../api/auth';
+import { authApi } from '@api/auth';
 
 const { Title, Text, Link } = Typography;
 

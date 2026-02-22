@@ -32,11 +32,11 @@ import {
   AppstoreOutlined, 
   BarsOutlined,
 } from '@ant-design/icons';
-import type { InventoryItem, ViewMode, AddItemFormData } from '../types';
-import { mockInventory, mockCategories, mockLocations } from '../mockData';
+import type { InventoryItem, ViewMode, AddItemFormData } from '@/types';
+import { mockInventory, mockCategories, mockLocations } from '@/mockData';
 import { useNavigate } from 'react-router-dom';
-import { statusConfig } from '../theme';
-import AddItemModal from '../components/component/AddItemModal';
+import { statusConfig } from '@/theme';
+import AddItemModal from '@components/component/AddItemModal';
 
 const { Title, Text } = Typography;
 

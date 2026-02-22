@@ -24,9 +24,9 @@ import {
 } from 'antd';
 import type { TimelineItemProps } from 'antd';
 import { ArrowLeftOutlined, ShoppingCartOutlined } from '@ant-design/icons';
-import type { InventoryItem, ConsumptionRecord } from '../types';
-import { statusConfig } from '../theme';
-import { mockConsumptionHistory, mockInventory } from '../mockData';
+import type { InventoryItem, ConsumptionRecord } from '@/types';
+import { statusConfig } from '@/theme';
+import { mockConsumptionHistory, mockInventory } from '@/mockData';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const { Title, Text } = Typography;

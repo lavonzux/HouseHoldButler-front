@@ -12,8 +12,8 @@ import {
   Select, 
   Typography,
 } from 'antd';
-import type { BudgetCategory } from '../types';
-import { mockBudgetCategories, calculateBudgetTotal } from '../mockData';
+import type { BudgetCategory } from '@/types';
+import { mockBudgetCategories, calculateBudgetTotal } from '@/mockData';
 
 const { Title, Text } = Typography;
 

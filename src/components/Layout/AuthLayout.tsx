@@ -11,7 +11,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import zhTW from 'antd/locale/zh_TW';
 import { ConfigProvider, Typography } from 'antd';
 const { Title } = Typography;
-import { themeConfig, VIEW_TITLES } from '../../theme';
+import { themeConfig, VIEW_TITLES } from '@/theme.ts';
 
 const { Sider, Header, Content } = Layout;
 
