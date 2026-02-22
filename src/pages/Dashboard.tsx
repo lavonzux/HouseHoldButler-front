@@ -34,10 +34,10 @@ import {
   ShoppingCartOutlined,
   RobotOutlined,
 } from '@ant-design/icons';
-import type { AddItemFormData, InventoryItem } from '../types';
+import type { AddItemFormData, InventoryItem } from '@/types';
 import { useNavigate } from 'react-router-dom';
-import { mockInventory } from '../mockData';
-import AddItemModal from '../components/component/AddItemModal';
+import { mockInventory } from '@/mockData';
+import AddItemModal from '@components/component/AddItemModal';
 
 const { Title, Text } = Typography;
 

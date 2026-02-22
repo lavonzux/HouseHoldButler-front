@@ -1,43 +1,7 @@
 {
-  "compilerOptions": {
-    // 編譯目標
-    "target": "ES2020",
-    "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
-    "skipLibCheck": true,
-
-    // 模組解析
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
-
-    // 嚴格模式 - 學習 TypeScript 建議全部開啟
-    "strict": true,                    // 啟用所有嚴格類型檢查選項
-    "noImplicitAny": true,            // 不允許隱式 any 型別
-    "strictNullChecks": true,         // 嚴格的 null 檢查
-    "strictFunctionTypes": true,      // 嚴格的函式型別檢查
-    "strictBindCallApply": true,      // 嚴格的 bind/call/apply 檢查
-    "strictPropertyInitialization": true, // 嚴格的屬性初始化檢查
-    "noImplicitThis": true,           // 不允許隱式 this
-    "alwaysStrict": true,             // 在每個原始檔案中加入 "use strict"
-
-    // 額外檢查
-    "noUnusedLocals": false,           // 報告未使用的區域變數
-    "noUnusedParameters": false,       // 報告未使用的參數
-    "noFallthroughCasesInSwitch": true, // 報告 switch 語句的 fallthrough 錯誤
-    "noUncheckedIndexedAccess": true, // 索引存取時加入 undefined 檢查
-
-    // 路徑別名（可選）
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./*"],
-      "@/types/*": ["./types/*"]
-    }
-  },
-  "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
 }

@@ -19,8 +19,8 @@ import {
   ClockCircleOutlined, 
   CheckOutlined,
 } from '@ant-design/icons';
-import type { Reminder, ReminderType } from '../types';
-import { mockReminders } from '../mockData';
+import type { Reminder, ReminderType } from '@/types';
+import { mockReminders } from '@/mockData';
 
 const { Title, Text } = Typography;
 
