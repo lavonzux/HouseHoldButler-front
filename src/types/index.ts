@@ -12,6 +12,14 @@
 // ============================================
 
 /**
+ * 已登入使用者資訊 - 對應 ASP.NET Core Identity /manage/info 回應
+ */
+export interface User {
+  email: string;
+  isEmailConfirmed: boolean;
+}
+
+/**
  * 庫存狀態 - 使用聯合型別 (Union Type)
  * 只能是這三個值之一
  */
