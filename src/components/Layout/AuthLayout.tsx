@@ -1,10 +1,10 @@
 // src/components/Layout/AuthLayout.tsx
 import React, { useState } from 'react';
-import { Layout, Menu, Button, Badge, Avatar, Space } from 'antd';
+import { Layout, Menu, Button, Badge, Avatar, Space, Dropdown } from 'antd';
 import {
   DashboardOutlined, InboxOutlined, BellOutlined,
   DollarOutlined, SettingOutlined, MenuFoldOutlined,
-  MenuUnfoldOutlined, UserOutlined,
+  MenuUnfoldOutlined, UserOutlined, LogoutOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
@@ -12,6 +12,7 @@ import zhTW from 'antd/locale/zh_TW';
 import { ConfigProvider, Typography } from 'antd';
 const { Title } = Typography;
 import { themeConfig, VIEW_TITLES } from '@/theme.ts';
+import { useAuth } from '@/context/AuthContext';
 
 const { Sider, Header, Content } = Layout;
 
@@ -29,6 +30,16 @@ const AuthLayout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
+
+  const userMenuItems: MenuProps['items'] = [
+    {
+      key: 'logout',
+      icon: <LogoutOutlined />,
+      label: '登出',
+      onClick: logout,
+    },
+  ];
 
   const selectedKey = location.pathname;
 
@@ -86,9 +97,11 @@ const AuthLayout: React.FC = () => {
               alignItems: 'center',
               gap: 12,
             }}>
-              <Avatar style={{ backgroundColor: '#1677ff' }}>A</Avatar>
+              <Avatar style={{ backgroundColor: '#1677ff' }}>
+                {user?.email?.[0]?.toUpperCase() ?? 'U'}
+              </Avatar>
               <div>
-                <div style={{ color: '#fff', fontSize: 13 }}>Anthony's Home</div>
+                <div style={{ color: '#fff', fontSize: 13 }}>{user?.email ?? ''}</div>
                 <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: 11 }}>管理員</div>
               </div>
             </div>
@@ -121,7 +134,9 @@ const AuthLayout: React.FC = () => {
               <Badge count={3}>
                 <Button type="text" icon={<BellOutlined />} />
               </Badge>
-              <Avatar style={{ backgroundColor: '#1677ff' }} icon={<UserOutlined />} />
+              <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
+                <Avatar style={{ backgroundColor: '#1677ff', cursor: 'pointer' }} icon={<UserOutlined />} />
+              </Dropdown>
             </Space>
           </Header>
 

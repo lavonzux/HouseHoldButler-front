@@ -10,6 +10,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
+import { AuthProvider } from './context/AuthContext';
 
 // 取得 root 元素
 // 使用非空斷言 (!) 因為我們確定 index.html 中有這個元素
@@ -19,7 +20,9 @@ const rootElement = document.getElementById('root')!;
 ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <AuthProvider>
+        <App />
+      </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

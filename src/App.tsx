@@ -2,6 +2,7 @@
 import React, {useEffect} from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import AuthLayout from '@components/Layout/AuthLayout';
+import RequireAuth from '@components/Layout/RequireAuth';
 import Landing from '@pages/Landing';
 import Login from '@pages/Login';
 import Dashboard from '@pages/Dashboard';
@@ -27,14 +28,16 @@ const App: React.FC = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* 需要登入的頁面（目前模擬全部開放） */}
-        <Route element={<AuthLayout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/inventory" element={<Inventory />} />
-          <Route path="/inventory/:id" element={<ItemDetail />} />
-          <Route path="/reminders" element={<Reminders />} />
-          <Route path="/budget" element={<Budget />} />
-          <Route path="/settings" element={<Settings />} />          
+        {/* 需要登入的頁面 */}
+        <Route element={<RequireAuth />}>
+          <Route element={<AuthLayout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/inventory" element={<Inventory />} />
+            <Route path="/inventory/:id" element={<ItemDetail />} />
+            <Route path="/reminders" element={<Reminders />} />
+            <Route path="/budget" element={<Budget />} />
+            <Route path="/settings" element={<Settings />} />
+          </Route>
         </Route>
         {/* 明確的 404 頁面路由 */}
         <Route path="/notFound" element={<NotFound />} />

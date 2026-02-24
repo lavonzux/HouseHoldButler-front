@@ -7,23 +7,33 @@ import {
 import { 
   LockOutlined, UserOutlined, GoogleOutlined, FacebookOutlined 
 } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { authApi } from '@api/auth';
+import { useAuth } from '@/context/AuthContext';
 
 const { Title, Text, Link } = Typography;
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { login } = useAuth();
   const [loading, setLoading] = useState(false);
 
   const onFinish = async (values: { email: string; password: string; remember?: boolean }) => {
     setLoading(true);
     try {
       await authApi.login({ email: values.email, password: values.password, rememberMe: values.remember ?? false });
-      message.success('登入成功！');
-      navigate('/dashboard');
-    } catch (error: any) {
-      const msg = error?.response?.data?.message ?? '登入失敗，請確認帳號與密碼';
+      const me = await authApi.getMe();
+      if (me) {
+        login(me);
+        const from = (location.state as { from?: { pathname: string } })?.from?.pathname ?? '/dashboard';
+        navigate(from, { replace: true });
+      } else {
+        message.error('登入後無法取得使用者資訊，請重試');
+      }
+    } catch (error: unknown) {
+      const axiosError = error as { response?: { data?: { message?: string } } };
+      const msg = axiosError?.response?.data?.message ?? '登入失敗，請確認帳號與密碼';
       message.error(msg);
     } finally {
       setLoading(false);
