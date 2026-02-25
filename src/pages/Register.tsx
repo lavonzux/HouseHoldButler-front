@@ -18,16 +18,19 @@ import {
   IdcardOutlined,
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { authApi } from '@api/auth';
+import { useAuth } from '@/context/AuthContext';
 
 const { Title, Text, Link } = Typography;
 
 const Register: React.FC = () => {
+  const { refreshUser } = useAuth()
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [agreed, setAgreed] = useState(false);
 
-  const onFinish = (values: {
+  const onFinish = async (values: {
     email: string;
     password: string;
     confirmPassword: string;
@@ -41,14 +44,27 @@ const Register: React.FC = () => {
 
     setLoading(true);
 
-    // 模擬註冊 API 延遲
-    setTimeout(() => {
+    try {
+      await authApi.register({
+        email: values.email,
+        password: values.password,
+        name: values.name,
+        phone: values.phone
+      });
+
+      // 註冊成功後主動刷新使用者狀態
+      await refreshUser()
+      message.success('註冊成功');
+      navigate('/dashboard'); // 註冊成功後直接導向使用者儀表板
+    } catch (error: any) {
+      // 處理後端錯誤
+      const errorMsg = error.response?.data?.error?.[0]?.description ||
+      '註冊失敗，請稍後再試';
+      message.error(errorMsg);
+    } finally {
       setLoading(false);
-      message.success('註冊成功！請登入');
-      navigate('/login');
-      // 實際專案應呼叫後端註冊 API，並處理錯誤情況
-    }, 1500);
-  };
+    }
+  }
 
   // 台灣手機號碼常見格式驗證（09開頭 + 8碼）
   const phoneValidator = (_: any, value: string) => {

@@ -12,6 +12,7 @@ interface AuthContextValue {
     isLoading: boolean       // true 僅於初始 /manage/info 檢查期間
     login: (user: User) => void
     logout: () => Promise<void>
+    refreshUser: () => Promise<void> // 讓註冊/登入後可以主動重新取得使用者資訊
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -24,14 +25,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // 追蹤初始載入是否完成，避免初始 getMe 產生的 401 事件觸發跳轉
     const initialLoadDone = useRef(false)
 
-    // 應用程式啟動時檢查 session 是否有效
-    useEffect(() => {
-        authApi.getMe().then((fetchedUser) => {
+    const refreshUser = useCallback(async () => {
+        setIsLoading(true)
+        try {
+            const fetchedUser = await authApi.getMe()
             setUser(fetchedUser)
-            initialLoadDone.current = true
+        } catch (err) {
+            setUser(null) // 不主動跳轉，讓路由守衛處理
+        } finally {
             setIsLoading(false)
-        })
+        }
     }, [])
+
+    // 應用程式啟動時檢查 session 是否有效
+    // useEffect(() => {
+    //     authApi.getMe().then((fetchedUser) => {
+    //         setUser(fetchedUser)
+    //         initialLoadDone.current = true
+    //         setIsLoading(false)
+    //     })
+    // }, [])
+
+    useEffect(() => {
+        refreshUser().finally(() => {
+            initialLoadDone.current = true
+        })
+    }, [refreshUser])
 
     // 監聽 Axios 攔截器發出的 401 事件（session 中途過期）
     useEffect(() => {
@@ -56,10 +75,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         await authApi.logout()
         setUser(null)
         navigate('/login', { replace: true })
-    }, [navigate])
+    }, [navigate])    
 
     return (
-        <AuthContext.Provider value={{ user, isLoading, login, logout }}>
+        <AuthContext.Provider 
+            value={{ 
+                user,
+                isLoading,
+                login,
+                logout,
+                refreshUser 
+            }}
+        >
             {children}
         </AuthContext.Provider>
     )

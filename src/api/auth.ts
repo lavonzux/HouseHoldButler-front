@@ -7,9 +7,16 @@ export interface LoginRequest {
     rememberMe: boolean
 }
 
+export interface RegisterRequest {
+    email: string
+    password: string
+    name: string
+    phone: string
+}
+
 export const authApi = {
-    register: async (data: LoginRequest) => {
-        await apiClient.post('/register', data);
+    register: async (data: RegisterRequest): Promise<void> => {
+        await apiClient.post('/api/register', data);
     },
 
     login: async (data: LoginRequest): Promise<void> => {
