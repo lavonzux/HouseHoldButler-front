@@ -13,7 +13,7 @@ export const authApi = {
     },
 
     login: async (data: LoginRequest): Promise<void> => {
-        await apiClient.post('/login', data)
+        await apiClient.post('/login?useCookies=true', data)
         // 不需要處理 token，Cookie 由瀏覽器自動儲存
     },
 
