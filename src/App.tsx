@@ -5,6 +5,7 @@ import AuthLayout from '@components/Layout/AuthLayout';
 import RequireAuth from '@components/Layout/RequireAuth';
 import Landing from '@pages/Landing';
 import Login from '@pages/Login';
+import ForgotPassword from '@pages/ForgotPassword';
 import Dashboard from '@pages/Dashboard';
 import Inventory from '@pages/Inventory';
 import ItemDetail from '@pages/ItemDetail';
@@ -27,6 +28,7 @@ const App: React.FC = () => {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgotPassword" element={<ForgotPassword />} />
 
         {/* 需要登入的頁面 */}
         <Route element={<RequireAuth />}>

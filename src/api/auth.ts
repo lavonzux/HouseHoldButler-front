@@ -14,6 +14,16 @@ export interface RegisterRequest {
     phone: string
 }
 
+export interface ForgotPasswordRequest {
+    email: string;
+}
+
+export interface ResetPasswordRequest {
+    email: string;
+    resetCode: string;
+    newPassword: string;
+}
+
 export const authApi = {
     register: async (data: RegisterRequest): Promise<void> => {
         await apiClient.post('/api/register', data);
@@ -38,4 +48,13 @@ export const authApi = {
             return null
         }
     },
+
+    forgotPassword: async (data: ForgotPasswordRequest): Promise<void> => {
+        // 成功只回應 200，無 body，不需要 return
+        await apiClient.post('/api/forgotPassword', data);
+    },
+
+    resetPassword: async (data: ResetPasswordRequest): Promise<void> => {
+        await apiClient.post('/api/resetPassword', data);
+    }
 }
