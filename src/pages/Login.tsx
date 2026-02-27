@@ -1,4 +1,3 @@
-// src/pages/Login.tsx
 import React, { useState } from 'react';
 import { 
   Card, Form, Input, Button, Typography, Divider, Space, Checkbox, 
@@ -121,7 +120,7 @@ const Login: React.FC = () => {
               <Form.Item name="remember" valuePropName="checked" noStyle>
                 <Checkbox>記住我</Checkbox>
               </Form.Item>
-              <Link style={{ color: '#1677ff' }}>忘記密碼？</Link>
+              <Link style={{ color: '#1677ff' }} onClick={() => navigate('/forgotPassword')}>忘記密碼？</Link>
             </div>
           </Form.Item>
 
