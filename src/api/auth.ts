@@ -26,7 +26,7 @@ export interface ResetPasswordRequest {
 
 export const authApi = {
     register: async (data: RegisterRequest): Promise<void> => {
-        await apiClient.post('/api/register', data);
+        await apiClient.post('/api/Auth/register', data);
     },
 
     login: async (data: LoginRequest): Promise<void> => {
@@ -51,10 +51,10 @@ export const authApi = {
 
     forgotPassword: async (data: ForgotPasswordRequest): Promise<void> => {
         // 成功只回應 200，無 body，不需要 return
-        await apiClient.post('/api/forgotPassword', data);
+        await apiClient.post('/api/Auth/forgotPassword', data);
     },
 
     resetPassword: async (data: ResetPasswordRequest): Promise<void> => {
-        await apiClient.post('/api/resetPassword', data);
+        await apiClient.post('/api/Auth/resetPassword', data);
     }
 }
