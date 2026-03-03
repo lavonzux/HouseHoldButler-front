@@ -1,28 +1,6 @@
 ﻿import apiClient from '@api/client'
 import type { User } from '@/types'
-
-export interface LoginRequest {
-    email: string
-    password: string
-    rememberMe: boolean
-}
-
-export interface RegisterRequest {
-    email: string
-    password: string
-    name: string
-    phone: string
-}
-
-export interface ForgotPasswordRequest {
-    email: string;
-}
-
-export interface ResetPasswordRequest {
-    email: string;
-    resetCode: string;
-    newPassword: string;
-}
+import type { RegisterRequest, LoginRequest, ForgotPasswordRequest, ResetPasswordRequest } from '@/types/auth'
 
 export const authApi = {
     register: async (data: RegisterRequest): Promise<void> => {

@@ -114,18 +114,17 @@ const AddItemModal: React.FC<AddItemModalProps> = ({ open, onClose, onSubmit }) 
       open={open}
       onCancel={handleCancel}
       footer={
-        <Space>
-          {currentStep > 0 && (
-            <Button onClick={handlePrevious}>上一步</Button>
-          )}
-          <Button onClick={handleCancel}>取消</Button>
-          <Button type="primary" onClick={handleNext}>
-            {currentStep < 2 ? '下一步' : '完成新增'}
-          </Button>
-        </Space>
+      <Space>
+        {currentStep > 0 && (
+        <Button onClick={handlePrevious}>上一步</Button>
+        )}
+        <Button onClick={handleCancel}>取消</Button>
+        <Button type="primary" onClick={handleNext}>
+        {currentStep < 2 ? '下一步' : '完成新增'}
+        </Button>
+      </Space>
       }
       width={560}
-      destroyOnClose
     >
       {/* 步驟指示器 */}
       <Steps current={currentStep} items={steps} style={{ marginBottom: 24 }} />

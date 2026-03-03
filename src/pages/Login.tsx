@@ -139,7 +139,7 @@ const Login: React.FC = () => {
 
           <Divider plain>或使用以下方式登入</Divider>
 
-          <Space direction="vertical" style={{ width: '100%' }} size="middle">
+          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 16 }}>
             <Button
               icon={<GoogleOutlined />}
               block
@@ -157,7 +157,7 @@ const Login: React.FC = () => {
             >
               使用 Facebook 登入
             </Button>
-          </Space>
+          </div>
 
           <div style={{ textAlign: 'center', marginTop: 24 }}>
             <Text type="secondary">

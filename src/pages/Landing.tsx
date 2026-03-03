@@ -195,7 +195,7 @@ const Landing: React.FC = () => {
               <Card
                 hoverable
                 style={{ height: '100%', textAlign: 'center', borderRadius: 12 }}
-                bodyStyle={{ padding: '40px 24px' }}
+                styles={{ body: { padding: '40px 24px' } }}
               >
                 <div style={{ fontSize: 48, marginBottom: 24 }}>{feature.icon}</div>
                 <Title level={4}>{feature.title}</Title>
