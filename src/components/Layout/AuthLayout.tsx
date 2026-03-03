@@ -51,8 +51,8 @@ const AuthLayout: React.FC = () => {
           collapsed={collapsed}
           onCollapse={setCollapsed}
           theme="dark"
-          width={200}
-          collapsedWidth={80}
+          width={220}
+          collapsedWidth={100}
         >
           <div
             style={{
@@ -61,20 +61,24 @@ const AuthLayout: React.FC = () => {
               alignItems: 'center',
               padding: '0 16px',
               background: '#002140',
-              cursor: 'pointer',           // 加上手型提示
+              cursor: 'pointer',
+              justifyContent: collapsed ? 'center' : 'flex-start',
+              overflow: 'hidden',
             }}
-            onClick={() => navigate('/')}   // ← 點擊跳轉到首頁
-            role="button"                 // 提升可訪問性
-            tabIndex={0}                  // 可聚焦
+            onClick={() => navigate('/')}
+            role="button"
+            tabIndex={0}
           >
             <img
               src="/houseHoldButlerLogo.png"
               alt="AI 管家 Logo"
-              style={{ height: 20, width: 'auto', margin: '6px' }}
+              style={{ height: 20, width: 'auto', margin: '6px', flexShrink: 0 }}
             />
-            <Title style={{ color: '#fff', fontSize: 18, fontWeight: 600,  }}>
-              AI 智慧家庭管家
-            </Title>
+            {!collapsed && (
+              <Title style={{ color: '#fff', fontSize: 18, fontWeight: 600, margin: 0, whiteSpace: 'nowrap' }}>
+                AI 智慧家庭管家
+              </Title>
+            )}
           </div>
 
           <Menu
