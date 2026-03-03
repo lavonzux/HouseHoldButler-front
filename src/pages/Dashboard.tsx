@@ -21,7 +21,6 @@ import {
   Select,
   Space,
   Typography,
-  List,
 } from 'antd';
 import { 
   PlusOutlined,
@@ -168,7 +167,7 @@ const Dashboard: React.FC = () => {
                 title={stat.title}
                 value={stat.value}
                 prefix={stat.prefix}
-                valueStyle={{ color: stat.color }}
+                valueRender={(value) => <span style={{ color: stat.color }}>{value}</span>}
               />
             </Card>
           </Col>
@@ -193,21 +192,38 @@ const Dashboard: React.FC = () => {
                 ✓ 目前沒有緊急事項
               </div>
             ) : (
-              <List
-                dataSource={criticalItems}
-                renderItem={(item: InventoryItem) => (
-                  <List.Item 
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {criticalItems.map((item: InventoryItem) => (
+                  <div
+                    key={item.id}
                     onClick={() => handleItemClick(item)}
-                    style={{ cursor: 'pointer' }}
-                    extra={<Tag color="red">補貨</Tag>}
+                    style={{
+                      cursor: 'pointer',
+                      padding: '12px',
+                      borderRadius: '4px',
+                      border: '1px solid #f0f0f0',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      transition: 'background-color 0.3s',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#fafafa';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }}
                   >
-                    <List.Item.Meta
-                      title={item.name}
-                      description={`剩餘 ${item.quantity} ${item.unit} · ${item.daysUntilEmpty} 天後用完`}
-                    />
-                  </List.Item>
-                )}
-              />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontWeight: 500, marginBottom: 4 }}>{item.name}</div>
+                      <div style={{ color: '#999', fontSize: '12px' }}>
+                        剩餘 {item.quantity} {item.unit} · {item.daysUntilEmpty} 天後用完
+                      </div>
+                    </div>
+                    <Tag color="red" style={{ marginLeft: 8 }}>補貨</Tag>
+                  </div>
+                ))}
+              </div>
             )}
           </Card>
         </Col>
@@ -223,21 +239,38 @@ const Dashboard: React.FC = () => {
             }
             extra={<Badge count={warningItems.length} style={{ backgroundColor: '#faad14' }} />}
           >
-            <List
-              dataSource={warningItems}
-              renderItem={(item: InventoryItem) => (
-                <List.Item 
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {warningItems.map((item: InventoryItem) => (
+                <div
+                  key={item.id}
                   onClick={() => handleItemClick(item)}
-                  style={{ cursor: 'pointer' }}
-                  extra={<Tag color="orange">注意</Tag>}
+                  style={{
+                    cursor: 'pointer',
+                    padding: '12px',
+                    borderRadius: '4px',
+                    border: '1px solid #f0f0f0',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    transition: 'background-color 0.3s',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#fafafa';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  }}
                 >
-                  <List.Item.Meta
-                    title={item.name}
-                    description={`剩餘 ${item.quantity} ${item.unit} · ${item.daysUntilEmpty} 天後用完`}
-                  />
-                </List.Item>
-              )}
-            />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 500, marginBottom: 4 }}>{item.name}</div>
+                    <div style={{ color: '#999', fontSize: '12px' }}>
+                      剩餘 {item.quantity} {item.unit} · {item.daysUntilEmpty} 天後用完
+                    </div>
+                  </div>
+                  <Tag color="orange" style={{ marginLeft: 8 }}>注意</Tag>
+                </div>
+              ))}
+            </div>
           </Card>
         </Col>
 

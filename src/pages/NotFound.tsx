@@ -24,7 +24,7 @@ const NotFound: React.FC = () => {
         status="404"
         title="404"
         subTitle={
-          <Space direction="vertical" size="middle" align="center">
+            <Space wrap style={{ flexDirection: 'column', width: '100%' }} align="center">
             <Title level={3} style={{ margin: 0, color: '#434343' }}>
               無法瀏覽這個頁面
             </Title>
@@ -34,7 +34,7 @@ const NotFound: React.FC = () => {
             <Text type="secondary" style={{ fontSize: 16 }}>
               請洽系統管理員
             </Text>
-          </Space>
+            </Space>
         }
         extra={
           <Space size="middle">
