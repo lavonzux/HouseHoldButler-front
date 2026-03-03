@@ -6,14 +6,7 @@ import React, {
 import { useNavigate } from 'react-router-dom'
 import { authApi } from '@api/auth'
 import type { User } from '@/types'
-
-interface AuthContextValue {
-    user: User | null        // null 代表未登入
-    isLoading: boolean       // true 僅於初始 /manage/info 檢查期間
-    login: (user: User) => void
-    logout: () => Promise<void>
-    refreshUser: () => Promise<void> // 讓註冊/登入後可以主動重新取得使用者資訊
-}
+import type { AuthContextValue } from '@/types/auth'
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
