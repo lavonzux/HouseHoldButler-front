@@ -1,8 +1,6 @@
-// src/pages/Landing.tsx
 import React, { useRef } from 'react';
-import { Button, Card, Row, Col, Typography, Space, Dropdown, Avatar } from 'antd';
-import type { MenuProps } from 'antd';
-import { UserOutlined, LogoutOutlined, DashboardOutlined, LoginOutlined, ArrowRightOutlined } from '@ant-design/icons';
+import { Button, Card, Row, Col, Typography } from 'antd';
+import { ArrowRightOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 
@@ -35,21 +33,6 @@ const Landing: React.FC = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth(); // 取得使用者資訊與登出函式
 
-  const userDropdownItems : MenuProps['items'] = [
-    {
-      key: 'dashboard',
-      icon: <DashboardOutlined />,
-      label: '進入 Dashboard',
-      onClick: () => navigate('/dashboard'),
-    },
-    {
-      key: 'logout',
-      icon: <LogoutOutlined />,
-      label: '登出',
-      onClick: logout, 
-    }
-  ];
-
   // 新增：用來指向「核心功能」區塊
   const featuresRef = useRef<HTMLDivElement>(null);
 
@@ -64,47 +47,10 @@ const Landing: React.FC = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f0f4ff 0%, #e6f0ff 100%)' }}>
-      {/* Navbar */}
-      <div
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: 64,
-          background: 'white',
-          borderBottom: '1px solid #e8e8e8',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '0 40px',
-          zIndex: 1000,
-          boxShadow: '0 1px 4px rgba(0,21,41,0.08)',
-        }}
-      >
-        <div style={{ fontSize: 24, fontWeight: 'bold', color: '#1677ff', display: 'flex', alignItems: 'center', gap: 12 }}>
-          <img src="/houseHoldButlerLogo.png" alt="AI 管家 Logo" style={{ height: 32, width: 'auto', display: 'block' }} />
-          AI 智慧家庭管家
-        </div>
-
-        <Space>
-          <Button type="link" onClick={scrollToFeatures}>功能特色</Button>
-          <Button type="link">價格方案</Button>
-          { user ? (
-            <Dropdown menu={{ items: userDropdownItems }} placement='bottomRight'>
-              <Avatar style={{backgroundColor: '#1677ff', cursor: 'pointer' }} icon={<UserOutlined />} />
-            </Dropdown>
-          ) : (
-            <Button type="primary" icon={<LoginOutlined />} onClick={() => navigate('/login')}>
-              登入
-            </Button>
-          )}          
-        </Space>
-      </div>
-
+    <div style={{ background: 'linear-gradient(135deg, #f0f4ff 0%, #e6f0ff 100%)' }}>
       {/* Hero Section */}
-      <div style={{ 
+      <div 
+        style={{ 
             position: 'relative',
             minHeight: '100vh',
             display: 'flex',
@@ -230,17 +176,7 @@ const Landing: React.FC = () => {
             </Col>
           ))}
         </Row>
-      </div>
-
-      {/* Footer */}
-      <div style={{ padding: '60px 40px', textAlign: 'center', background: '#001529', color: 'white' }}>
-        <Title level={4} style={{ color: 'white' }}>
-          AI 智慧家庭管家 - 讓家庭生活更聰明
-        </Title>
-        <Text style={{ color: 'rgba(255,255,255,0.65)' }}>
-          © 2026 AI HouseKeeper. All rights reserved.
-        </Text>
-      </div>
+      </div>      
     </div>
   );
 };

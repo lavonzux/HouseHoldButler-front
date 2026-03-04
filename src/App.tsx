@@ -1,6 +1,7 @@
 // src/App.tsx
 import React, {useEffect} from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
+import PublicLayout from '@components/Layout/PublicLayout';
 import AuthLayout from '@components/Layout/AuthLayout';
 import RequireAuth from '@components/Layout/RequireAuth';
 import Landing from '@pages/Landing';
@@ -24,11 +25,13 @@ const App: React.FC = () => {
 
   return (
       <Routes>
-        {/* 公開首頁 */}
-        <Route path="/" element={<Landing />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/forgotPassword" element={<ForgotPassword />} />
+        {/* 公開頁面，所有公開頁面共用 PublicLayout */}
+        <Route element={<PublicLayout />}>
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgotPassword" element={<ForgotPassword />} />
+        </Route>
 
         {/* 需要登入的頁面 */}
         <Route element={<RequireAuth />}>

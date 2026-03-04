@@ -26,6 +26,7 @@ const Login: React.FC = () => {
       if (me) {
         login(me);
         const from = (location.state as { from?: { pathname: string } })?.from?.pathname ?? '/dashboard';
+        message.success('登入成功');
         navigate(from, { replace: true });
       } else {
         message.error('登入後無法取得使用者資訊，請重試');
