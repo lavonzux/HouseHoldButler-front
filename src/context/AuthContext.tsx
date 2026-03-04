@@ -3,6 +3,7 @@ import React, {
     createContext, useContext, useState,
     useEffect, useCallback, useRef,
 } from 'react'
+import { message } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { authApi } from '@api/auth'
 import type { User } from '@/types'
@@ -72,6 +73,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
         // 不論後端是否成功，都強制清除前端狀態並跳轉
         setUser(null)
+        message.success('已成功登出')
         navigate('/login', { replace: true })
     }, [navigate])    
 
