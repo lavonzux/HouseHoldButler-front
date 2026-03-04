@@ -1,8 +1,10 @@
 // src/pages/Landing.tsx
 import React, { useRef } from 'react';
-import { Button, Card, Row, Col, Typography, Space } from 'antd';
-import { LoginOutlined, ArrowRightOutlined } from '@ant-design/icons';
+import { Button, Card, Row, Col, Typography, Space, Dropdown, Avatar } from 'antd';
+import type { MenuProps } from 'antd';
+import { UserOutlined, LogoutOutlined, DashboardOutlined, LoginOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/context/AuthContext';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -31,6 +33,22 @@ const features = [
 
 const Landing: React.FC = () => {
   const navigate = useNavigate();
+  const { user, logout } = useAuth(); // 取得使用者資訊與登出函式
+
+  const userDropdownItems : MenuProps['items'] = [
+    {
+      key: 'dashboard',
+      icon: <DashboardOutlined />,
+      label: '進入 Dashboard',
+      onClick: () => navigate('/dashboard'),
+    },
+    {
+      key: 'logout',
+      icon: <LogoutOutlined />,
+      label: '登出',
+      onClick: logout, 
+    }
+  ];
 
   // 新增：用來指向「核心功能」區塊
   const featuresRef = useRef<HTMLDivElement>(null);
@@ -73,9 +91,15 @@ const Landing: React.FC = () => {
         <Space>
           <Button type="link" onClick={scrollToFeatures}>功能特色</Button>
           <Button type="link">價格方案</Button>
-          <Button type="primary" icon={<LoginOutlined />} onClick={() => navigate('/login')}>
-            登入
-          </Button>
+          { user ? (
+            <Dropdown menu={{ items: userDropdownItems }} placement='bottomRight'>
+              <Avatar style={{backgroundColor: '#1677ff', cursor: 'pointer' }} icon={<UserOutlined />} />
+            </Dropdown>
+          ) : (
+            <Button type="primary" icon={<LoginOutlined />} onClick={() => navigate('/login')}>
+              登入
+            </Button>
+          )}          
         </Space>
       </div>
 
