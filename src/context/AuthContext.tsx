@@ -65,7 +65,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, [])
 
     const logout = useCallback(async () => {
-        await authApi.logout()
+        try {
+            await authApi.logout()
+        } catch (err) {
+            console.warn('後端登出 API 呼叫失敗，但仍執行前端登出流程', err);
+        }
+        // 不論後端是否成功，都強制清除前端狀態並跳轉
         setUser(null)
         navigate('/login', { replace: true })
     }, [navigate])    

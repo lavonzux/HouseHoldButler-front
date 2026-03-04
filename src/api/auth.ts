@@ -13,7 +13,7 @@ export const authApi = {
     },
 
     logout: async (): Promise<void> => {
-        await apiClient.post('/logout')
+        await apiClient.post('/api/Auth/logout')
         // Cookie 由後端清除，前端不需要動 localStorage
     },
 
