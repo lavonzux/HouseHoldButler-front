@@ -22,7 +22,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const refreshUser = useCallback(async () => {
         setIsLoading(true)
         try {
-            const fetchedUser = await authApi.getMe({ skipUnauthorizedEvent: true })
+            const fetchedUser = await authApi.getMe()
             setUser(fetchedUser)
         } catch (err) {
             setUser(null) // 不主動跳轉，讓路由守衛處理
@@ -54,7 +54,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 return
             }
             setUser(null)
-            navigate('/login', { replace: true })
+            // 不主動跳轉，讓路由守衛處理
         }
 
         window.addEventListener('auth:unauthorized', handleUnauthorized)
@@ -76,7 +76,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // 不論後端是否成功，都強制清除前端狀態並跳轉
         setUser(null)
         message.success('已成功登出')
-        navigate('/login', { replace: true })
+        // 不主動跳轉，讓路由守衛處理
     }, [navigate])    
 
     return (
