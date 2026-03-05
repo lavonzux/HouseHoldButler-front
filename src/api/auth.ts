@@ -17,9 +17,11 @@ export const authApi = {
         // Cookie 由後端清除，前端不需要動 localStorage
     },
 
-    getMe: async (): Promise<User | null> => {
+    getMe: async (options: { skipUnauthorizedEvent?: boolean} = {}): Promise<User | null> => {
         try {
-            const response = await apiClient.get<User>('/manage/info')
+            const response = await apiClient.get<User>('/manage/info', {
+            skipUnauthorizedEvent: options.skipUnauthorizedEvent ?? false,
+        })
             return response.data
         } catch {
             // 401 或任何網路錯誤都視為未登入，不拋出例外

@@ -22,7 +22,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const refreshUser = useCallback(async () => {
         setIsLoading(true)
         try {
-            const fetchedUser = await authApi.getMe()
+            const fetchedUser = await authApi.getMe({ skipUnauthorizedEvent: true })
             setUser(fetchedUser)
         } catch (err) {
             setUser(null) // 不主動跳轉，讓路由守衛處理
@@ -50,7 +50,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     useEffect(() => {
         const handleUnauthorized = () => {
             // 忽略初始 getMe 呼叫期間產生的 401
-            if (!initialLoadDone.current) return
+            if (!initialLoadDone.current) {
+                return
+            }
             setUser(null)
             navigate('/login', { replace: true })
         }
