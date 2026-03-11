@@ -162,44 +162,6 @@ export const mockLocations: SelectOption[] = [
 ];
 
 /**
- * 提醒事項
- */
-export const mockReminders: Reminder[] = [
-  { 
-    id: 1, 
-    type: 'purchase', 
-    item: '洗衣精', 
-    message: '庫存即將用完，建議 3 天內購買', 
-    priority: 'high', 
-    time: '今天',
-  },
-  { 
-    id: 2, 
-    type: 'purchase', 
-    item: '洗碗精', 
-    message: '庫存即將用完，建議 4 天內購買', 
-    priority: 'high', 
-    time: '今天',
-  },
-  { 
-    id: 3, 
-    type: 'expiry', 
-    item: '全脂牛奶', 
-    message: '將於 7 天後過期', 
-    priority: 'medium', 
-    time: '2026-02-12',
-  },
-  { 
-    id: 4, 
-    type: 'purchase', 
-    item: '衛生紙', 
-    message: '庫存偏低，建議一週內購買', 
-    priority: 'medium', 
-    time: '明天',
-  },
-];
-
-/**
  * 預算分類
  */
 export const mockBudgetCategories: BudgetCategory[] = [

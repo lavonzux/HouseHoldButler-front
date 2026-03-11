@@ -1,10 +1,10 @@
-// src/components/Layout/AuthLayout.tsx
 import React, { useState } from 'react';
-import { Layout, Menu, Button, Badge, Avatar, Space, Dropdown } from 'antd';
+import { Layout, Menu, Button, Badge, Avatar, Space, Dropdown, Tag } from 'antd';
 import {
   DashboardOutlined, InboxOutlined, BellOutlined,
   DollarOutlined, SettingOutlined, MenuFoldOutlined,
-  MenuUnfoldOutlined, UserOutlined, LogoutOutlined,
+  MenuUnfoldOutlined, UserOutlined, LogoutOutlined, 
+  ShoppingCartOutlined, ClockCircleOutlined
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
@@ -13,6 +13,7 @@ import { ConfigProvider, Typography } from 'antd';
 const { Title } = Typography;
 import { themeConfig, VIEW_TITLES } from '@/theme.ts';
 import { useAuth } from '@/context/AuthContext';
+import { useNotifications } from '@/context/NotificationContext';
 
 const { Sider, Header, Content } = Layout;
 
@@ -30,8 +31,86 @@ const AuthLayout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
 
+  // 在 AuthLayout 元件內部，取得 context 資料
+  const { user, logout } = useAuth();
+  const { notifications, unreadCount, markAsRead} = useNotifications();
+
+  // 只取前 3 筆（可依需求調整）
+  const recentNotifications = notifications.slice(0, 3);
+
+  // 定義通知下拉選單內容
+  const notificationMenuItems: MenuProps['items'] = [
+    // 標題行（不可點擊）
+    {
+      key: 'header',
+      label: (
+        <div style={{ padding: '8px 12px', fontWeight: 600, color: '#f5222d' }}>
+          提醒事項
+          <span style={{ float: 'right', color: '#f5222d' }}>
+            {unreadCount} 則未讀
+          </span>
+        </div>
+      ),
+      disabled: true,
+    },
+    // 分隔線
+    { type: 'divider' },
+    // 前幾筆提醒
+    ...recentNotifications.map((item) => ({
+      key: `notif-${item.id}`,
+      label: (
+        <div style={{ padding: '8px 12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Avatar
+              size="small"
+              icon={
+                item.reminderType === 'LOW_STOCK' 
+                  ? <ShoppingCartOutlined /> 
+                  : <ClockCircleOutlined />
+              }
+            />
+            <div style={{ flex: 1 }}>
+              <div>
+                <strong>{item.Name}</strong>
+              </div>
+              <div style={{ fontSize: 13, marginTop: 2 }}>
+                {item.message}
+              </div>
+              <div style={{ fontSize: 12, color: '#8c8c8c', marginTop: 4 }}>
+                {item.sentAt}
+              </div>
+            </div>
+          </div>
+        </div>
+      ),
+      onClick: () => {
+        markAsRead(item.id);
+        navigate('/reminders');
+      },
+    })),
+    // 如果沒有提醒，顯示空狀態
+    ...(recentNotifications.length === 0
+      ? [{
+          key: 'empty',
+          label: <div style={{ padding: '16px', textAlign: 'center', color: '#8c8c8c' }}>目前沒有新提醒</div>,
+          disabled: true,
+        }]
+      : []),
+    // 分隔線 + 查看全部
+    { type: 'divider' },
+    {
+      key: 'view-all',
+      label: (
+        <div style={{ textAlign: 'center', padding: '8px 0', backgroundColor: '#1677ff', color: '#fff', borderRadius: 4 }}>
+          查看所有提醒事項
+        </div>
+      ),
+      onClick: () => navigate('/reminders'),
+    },
+  ];
+
+  // 定義使用者選單內容
   const userMenuItems: MenuProps['items'] = [
     {
       key: 'logout',
@@ -134,10 +213,16 @@ const AuthLayout: React.FC = () => {
               </span>
             </Space>
 
-            <Space>
-              <Badge count={3}>
-                <Button type="text" icon={<BellOutlined />} />
-              </Badge>
+            <Space size="middle">
+              <Dropdown
+                menu={{ items: notificationMenuItems}}
+                trigger={['click']}
+                placement="bottomRight"
+              >
+                <Badge count={unreadCount}>
+                  <Avatar style={{ backgroundColor: '#1677ff', cursor: 'pointer' }} size="default" icon={<BellOutlined />} />
+                </Badge>
+              </Dropdown>              
               <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
                 <Avatar style={{ backgroundColor: '#1677ff', cursor: 'pointer' }} icon={<UserOutlined />} />
               </Dropdown>
