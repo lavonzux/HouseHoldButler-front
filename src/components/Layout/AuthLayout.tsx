@@ -34,7 +34,7 @@ const AuthLayout: React.FC = () => {
 
   // 在 AuthLayout 元件內部，取得 context 資料
   const { user, logout } = useAuth();
-  const { notifications, unreadCount, markAsRead} = useNotifications();
+  const { notifications, totalUnreadCount, markInventroyNoticesAsRead} = useNotifications();
 
   // 只取前 3 筆（可依需求調整）
   const recentNotifications = notifications.slice(0, 3);
@@ -48,7 +48,7 @@ const AuthLayout: React.FC = () => {
         <div style={{ padding: '8px 12px', fontWeight: 600, color: '#f5222d' }}>
           提醒事項
           <span style={{ float: 'right', color: '#f5222d' }}>
-            {unreadCount} 則未讀
+            {totalUnreadCount} 則未讀
           </span>
         </div>
       ),
@@ -85,7 +85,7 @@ const AuthLayout: React.FC = () => {
         </div>
       ),
       onClick: () => {
-        markAsRead(item.id);
+        markInventroyNoticesAsRead(item.id);
         navigate('/reminders');
       },
     })),
@@ -219,7 +219,7 @@ const AuthLayout: React.FC = () => {
                 trigger={['click']}
                 placement="bottomRight"
               >
-                <Badge count={unreadCount}>
+                <Badge count={totalUnreadCount}>
                   <Avatar style={{ backgroundColor: '#1677ff', cursor: 'pointer' }} size="default" icon={<BellOutlined />} />
                 </Badge>
               </Dropdown>              
