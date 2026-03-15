@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Layout, Menu, Button, Badge, Avatar, Space, Dropdown, Tag } from 'antd';
 import {
   DashboardOutlined, InboxOutlined, BellOutlined,
@@ -34,7 +34,12 @@ const AuthLayout: React.FC = () => {
 
   // 在 AuthLayout 元件內部，取得 context 資料
   const { user, logout } = useAuth();
-  const { notifications, totalUnreadCount, markInventroyNoticesAsRead} = useNotifications();
+  const { notifications, totalUnreadCount, markInventroyNoticesAsRead, refreshBudgetAlerts } = useNotifications();
+
+  // 監聽路由變化，每次切換頁面時重新整理預算警示
+  useEffect(() => {
+    refreshBudgetAlerts();
+  }, [location.pathname, refreshBudgetAlerts])
 
   // 只取前 3 筆（可依需求調整）
   const recentNotifications = notifications.slice(0, 3);
