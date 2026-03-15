@@ -10,14 +10,13 @@ export const budgetApi = {
         return response.data;
     },
 
-    // 取得預算警示通知清單
-    getBudgetAlerts: async (yearMonth?: string): Promise<BudgetAlert[]> => {
-        const dateParam = yearMonth ? `${yearMonth}-12` : '';
-        const response = await apiClient.get<BudgetAlert[]>(`/api/Budget/getBudgetAlerts?yearMonth=${dateParam}`);
+    // 取得預算警示通知清單 (不限月份)
+    getBudgetAlerts: async (): Promise<BudgetAlert[]> => {
+        const response = await apiClient.get<BudgetAlert[]>('/api/Budget/getBudgetAlerts');
         return response.data;
     },
 
-    // 取得未讀的預算警示通知數量
+    // 取得未讀的預算警示通知數量 (不限月份)
     getUnreadAlertCount: async (): Promise<number> => {
         const response = await apiClient.get<number>('/api/Budget/getUnreadAlertCount')
         return response.data;
@@ -28,9 +27,8 @@ export const budgetApi = {
         await apiClient.patch(`/api/Budget/markAlertAsRead/${id}`);
     },
 
-    // 標記當月所有預算警示通知為已讀
-    markAllAlertsAsRead: async (yearMonth?: string): Promise<void> => {
-        const dateParam = yearMonth ? `${yearMonth}-01` : '';
-        await apiClient.patch(`/api/Budget/markAllAlertsAsRead?yearMonth=${dateParam}`);
+    // 標記所有未讀預算警示通知為已讀
+    markAllAlertsAsRead: async (): Promise<void> => {
+        await apiClient.patch('/api/Budget/markAllAlertsAsRead');
     }
 }
