@@ -178,7 +178,7 @@ const SetBudgetModal: React.FC<SetBudgetModalProps> = ({
         </Button>,
       ]}
       width={600}
-      destroyOnClose
+      destroyOnHidden
     >
       <Spin spinning={loadingCategories}>
         {/* 表頭 */}
@@ -200,7 +200,7 @@ const SetBudgetModal: React.FC<SetBudgetModalProps> = ({
         </div>
 
         {/* 預算列表 */}
-        <Space direction="vertical" style={{ width: "100%" }} size={8}>
+        <Space orientation="vertical" style={{ width: "100%" }} size={8}>
           {items.map((item) => (
             <div
               key={item.key}
