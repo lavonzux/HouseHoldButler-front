@@ -40,6 +40,25 @@ export interface BudgetAlert {
   createdAt: string;
 }
 
+// 後端回傳的該月已設定分類預算（供 Modal 預填使用）
+export interface ExistingCategoryLimit {
+  categoryId: string;
+  categoryName: string;
+  icon: string | null;
+  budgetAmount: number;
+}
+
+// 批次設定分類預算的請求格式
+export interface BudgetLimitItem {
+  categoryId: string;
+  budgetAmount: number;
+}
+
+export interface SetBudgetLimitsPayload {
+  yearMonth: string; // 格式: "2026-03-01"
+  items: BudgetLimitItem[];
+}
+
 // 根據 AlertLevel 產生對應的中文訊息
 export function getBudgetAlertMessage(alert: BudgetAlert): string {
   const { categoryName, alertLevel, percentage } = alert;

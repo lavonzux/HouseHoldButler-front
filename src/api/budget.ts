@@ -1,5 +1,5 @@
 import apiClient from '@api/client';
-import type { BudgetSummary, BudgetAlert } from '@/types/budget.ts';
+import type { BudgetSummary, BudgetAlert, SetBudgetLimitsPayload, ExistingCategoryLimit } from '@/types/budget.ts';
 
 export const budgetApi = {
     // 取得某月份的預算總覽
@@ -8,6 +8,17 @@ export const budgetApi = {
         const dateParam = `${yearMonth}-01`;
         const response = await apiClient.get<BudgetSummary>(`/api/Budget/getMonthlyBudget?yearMonth=${dateParam}`);
         return response.data;
+    },
+    
+    getCategoryLimits: async (yearMonth: string): Promise<ExistingCategoryLimit[]> => {
+        const dateParam = `${yearMonth}-01`;
+        const response = await apiClient.get<ExistingCategoryLimit[]>(`/api/Budget/getCategoryLimits?yearMonth=${dateParam}`);
+        return response.data;
+    },
+
+    // 批次刪除、新增/更新分類預算（Upsert）
+    setBudgetLimits: async (payload: SetBudgetLimitsPayload): Promise<void> => {
+        await apiClient.post('/api/Budget/setBudgetLimits', payload);
     },
 
     // 取得預算警示通知清單 (不限月份)
