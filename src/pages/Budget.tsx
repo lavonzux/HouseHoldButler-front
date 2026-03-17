@@ -9,10 +9,13 @@ import {
   Spin,
   Alert,
   DatePicker,
+  Button,
 } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 import dayjs, { Dayjs } from "dayjs";
 import type { BudgetSummary } from "@/types/budget";
 import { budgetApi } from "@/api/budget";
+import SetBudgetModal from "@/components/component/SetBudgetModal";
 
 const { Title, Text } = Typography;
 
@@ -40,6 +43,7 @@ const Budget: React.FC = () => {
   const [budgetData, setBudgetData] = useState<BudgetSummary | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const fetchBudget = useCallback(async (date: Dayjs) => {
     setLoading(true);
@@ -76,16 +80,27 @@ const Budget: React.FC = () => {
           </Title>
           <Text type="secondary">{selectedMonth.format("YYYY 年 M 月")}</Text>
         </div>
-        <DatePicker
-          picker="month"
-          value={selectedMonth}
-          onChange={(date) => date && setSelectedMonth(date)}
-          format="YYYY 年 M 月"
-          allowClear={false}
-          disabledDate={(current) =>
-            current && current.isAfter(dayjs(), "month")
-          }
-        />
+
+         {/* 右側：新增分類預算按鈕 + 月份選擇器 */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => setModalOpen(true)}
+          >
+            設定分類預算
+          </Button>
+          <DatePicker
+            picker="month"
+            value={selectedMonth}
+            onChange={(date) => date && setSelectedMonth(date)}
+            format="YYYY 年 M 月"
+            allowClear={false}
+            disabledDate={(current) =>
+              current && current.isAfter(dayjs(), "month")
+            }
+          />
+        </div>
       </div>
 
       <Spin spinning={loading}>
@@ -169,6 +184,14 @@ const Budget: React.FC = () => {
           </>
         )}
       </Spin>
+
+      {/* 新增分類預算 Modal */}
+      <SetBudgetModal
+        open={modalOpen}
+        selectedMonth={selectedMonth}
+        onClose={() => setModalOpen(false)}
+        onSuccess={() => fetchBudget(selectedMonth)}
+      />
     </div>
   );
 };
