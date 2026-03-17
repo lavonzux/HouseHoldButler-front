@@ -1,42 +1,40 @@
 // ============================================
 // Inventory.tsx - 庫存清單頁面
 // ============================================
-// 
-// TypeScript 學習重點：
-// 1. Ant Design Table 的 ColumnsType 泛型
-// 2. 事件處理的型別 (React.MouseEvent)
-// 3. useState 的泛型用法
-// 4. 條件渲染時的型別縮小 (Type Narrowing)
-// ============================================
 
-import React, { useState, useMemo } from 'react';
-import { 
-  Table, 
-  Card, 
-  Input, 
-  Select, 
-  Button, 
-  Tag, 
-  Badge, 
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import {
+  Table,
+  Card,
+  Input,
+  Select,
+  Button,
+  Tag,
+  Badge,
   Progress,
   Space,
   Row,
   Col,
   Segmented,
   Typography,
+  Spin,
+  message,
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { 
-  PlusOutlined, 
-  SearchOutlined, 
-  AppstoreOutlined, 
+import {
+  PlusOutlined,
+  SearchOutlined,
+  AppstoreOutlined,
   BarsOutlined,
 } from '@ant-design/icons';
-import type { InventoryItem, ViewMode, AddItemFormData } from '@/types';
-import { mockInventory, mockCategories, mockLocations } from '@/mockData';
+import type { InventoryItem, ViewMode, AddItemFormData, ApiCategory, SelectOption } from '@/types';
+import { mockLocations, unitOptions } from '@/mockData';
 import { useNavigate } from 'react-router-dom';
 import { statusConfig } from '@/theme';
 import AddItemModal from '@components/component/AddItemModal';
+import CategoryModal from '@components/component/CategoryModal';
+import { inventoryApi, productApi, categoryApi } from '@api/inventory';
+import { mapApiInventoryToItem } from '@/utils/inventoryMapper';
 
 const { Title, Text } = Typography;
 
@@ -44,20 +42,69 @@ const { Title, Text } = Typography;
  * Inventory 元件
  */
 const Inventory: React.FC = () => {
-  // 使用泛型明確指定 state 的型別
   const [search, setSearch] = useState<string>('');
   const [category, setCategory] = useState<string>('全部');
   const [location, setLocation] = useState<string>('全部');
   const [viewMode, setViewMode] = useState<ViewMode>('table');
 
+  const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([]);
+  const [apiCategories, setApiCategories] = useState<ApiCategory[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
   const navigate = useNavigate();
 
   /**
+   * 從 API 載入資料
+   */
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const [inventories, categories] = await Promise.all([
+        inventoryApi.getAll(),
+        categoryApi.getAll(),
+      ]);
+      setInventoryItems(inventories.map(mapApiInventoryToItem));
+      setApiCategories(categories);
+    } catch (err) {
+      console.error('Failed to fetch inventory data:', err);
+      setError('無法載入庫存資料');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  /**
+   * 動態建立分類篩選選項
+   */
+  const categoryOptions = useMemo((): SelectOption[] => {
+    return [
+      { value: '全部', label: '全部' },
+      ...apiCategories.map(c => ({ value: c.name, label: c.name })),
+    ];
+  }, [apiCategories]);
+
+  /**
+   * 動態建立位置篩選選項
+   */
+  const locationOptions = useMemo((): SelectOption[] => {
+    const uniqueLocations = [...new Set(inventoryItems.map(i => i.location).filter(Boolean))];
+    return [
+      { value: '全部', label: '全部' },
+      ...uniqueLocations.map(loc => ({ value: loc, label: loc })),
+    ];
+  }, [inventoryItems]);
+
+  /**
    * 篩選後的資料
-   * useMemo 的泛型會根據回傳值自動推斷
    */
   const filteredData = useMemo((): InventoryItem[] => {
-    return mockInventory
+    return inventoryItems
       .filter(item => {
         const matchSearch = item.name.includes(search);
         const matchCategory = category === '全部' || item.category === category;
@@ -65,11 +112,10 @@ const Inventory: React.FC = () => {
         return matchSearch && matchCategory && matchLocation;
       })
       .sort((a, b) => a.daysUntilEmpty - b.daysUntilEmpty);
-  }, [search, category, location]);
+  }, [inventoryItems, search, category, location]);
 
   /**
    * 表格欄位定義
-   * 使用 ColumnsType<InventoryItem> 泛型確保型別安全
    */
   const columns: ColumnsType<InventoryItem> = [
     {
@@ -96,7 +142,7 @@ const Inventory: React.FC = () => {
     {
       title: '數量',
       key: 'quantity',
-      render: (_: unknown, record: InventoryItem) => 
+      render: (_: unknown, record: InventoryItem) =>
         `${record.quantity} ${record.unit}`,
     },
     {
@@ -120,18 +166,18 @@ const Inventory: React.FC = () => {
       align: 'center',
       render: (_: unknown, _record: InventoryItem) => (
         <Space size="small">
-          <Button 
-            type="link" 
-            size="small" 
+          <Button
+            type="link"
+            size="small"
             onClick={(e: React.MouseEvent) => {
-              e.stopPropagation(); // 阻止事件冒泡
+              e.stopPropagation();
             }}
           >
             消耗
           </Button>
-          <Button 
-            type="link" 
-            size="small" 
+          <Button
+            type="link"
+            size="small"
             onClick={(e: React.MouseEvent) => {
               e.stopPropagation();
             }}
@@ -143,154 +189,205 @@ const Inventory: React.FC = () => {
     },
   ];
 
-  /**
-   * 處理搜尋輸入變更
-   */
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setSearch(e.target.value);
   };
 
-  /**
-   * 處理視圖模式變更
-   */
   const handleViewModeChange = (value: string | number): void => {
     setViewMode(value as ViewMode);
   };
-  
-  // 點擊物品 → 跳轉詳情頁
+
   const handleSelectItem = (item: InventoryItem) => {
     navigate(`/inventory/${item.id}`);
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // 新增物品按鈕
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+
   const handleAddNew = () => {
     setIsModalOpen(true);
   };
 
-  // 關閉新增物品 modal
   const handleClose = () => {
     setIsModalOpen(false);
   };
 
-  // 提交新增物品 modal
-  const handleSubmit = (values: AddItemFormData) => {
-    console.log('新增：', values);
-    setIsModalOpen(false);
-    // 未來這裡應該要更新 mockInventory 或 call API
+  /**
+   * 提交新增物品：先建立 Product，再建立 Inventory
+   */
+  const handleSubmit = async (values: AddItemFormData) => {
+    try {
+      // 從 apiCategories 中找到對應的 categoryId
+      const matchedCategory = apiCategories.find(c => c.name === values.category);
+
+      // 計算 avgConsumptionRate（百分比/天）
+      const quantity = values.quantity ?? 1;
+      const avgConsumptionRate = values.consumptionRate
+        ? values.consumptionRate / quantity
+        : 0;
+
+      // Step 1: 建立 Product
+      const product = await productApi.create({
+        name: values.name,
+        categoryId: matchedCategory?.id ?? null,
+        barcode: null,
+        unit: values.unit,
+        avgConsumptionRate,
+        lowStockThreshold: 0.2,
+      });
+
+      // Step 2: 建立 Inventory
+      await inventoryApi.create({
+        productId: product.id,
+        location: values.location || null,
+        initialQuantity: quantity,
+        nearestExpiryDate: values.expiryDate,
+      });
+
+      message.success('物品新增成功');
+      setIsModalOpen(false);
+
+      // 重新載入清單
+      await fetchData();
+    } catch (err) {
+      console.error('Failed to create item:', err);
+      message.error('新增物品失敗，請稍後再試');
+    }
   };
 
   return (
-    <div>
-      {/* 頁面標題 */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-        <div>
-          <Title level={2} style={{ margin: 0 }}>庫存清單</Title>
-          <Text type="secondary">共 {mockInventory.length} 項物品</Text>
+    <Spin spinning={loading}>
+      <div>
+        {/* 頁面標題 */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+          <div>
+            <Title level={2} style={{ margin: 0 }}>庫存清單</Title>
+            <Text type="secondary">共 {inventoryItems.length} 項物品</Text>
+          </div>
+          <Space>
+            <Button onClick={() => setIsCategoryModalOpen(true)}>
+              分類管理
+            </Button>
+            <Button type="primary" icon={<PlusOutlined />} onClick={handleAddNew}>
+              新增物品
+            </Button>
+          </Space>
         </div>
-        <Button type="primary" icon={<PlusOutlined />} onClick={handleAddNew}>
-          新增物品
-        </Button>
-      </div>
 
-      {/* 工具列 */}
-      <Space style={{ marginBottom: 16 }} wrap>
-        <Input
-          placeholder="搜尋物品..."
-          prefix={<SearchOutlined />}
-          value={search}
-          onChange={handleSearchChange}
-          style={{ width: 240 }}
-          allowClear
-        />
-        <Select
-          value={category}
-          onChange={setCategory}
-          options={mockCategories}
-          style={{ width: 120 }}
-        />
-        <Select
-          value={location}
-          onChange={setLocation}
-          options={mockLocations}
-          style={{ width: 120 }}
-        />
-        <Segmented
-          value={viewMode}
-          onChange={handleViewModeChange}
-          options={[
-            { value: 'table', icon: <BarsOutlined /> },
-            { value: 'grid', icon: <AppstoreOutlined /> },
-          ]}
-        />
-      </Space>
+        {error && (
+          <Card style={{ marginBottom: 16 }}>
+            <Text type="danger">{error}</Text>
+          </Card>
+        )}
 
-      {/* 表格視圖 */}
-      {viewMode === 'table' && (
-        <Card bodyStyle={{ padding: 0 }}>
-          <Table<InventoryItem>
-            columns={columns}
-            dataSource={filteredData}
-            rowKey="id"
-            onRow={(record) => ({
-              onClick: () => handleSelectItem(record),
-              style: { cursor: 'pointer' },
-            })}
-            pagination={{ pageSize: 10 }}
+        {/* 工具列 */}
+        <Space style={{ marginBottom: 16 }} wrap>
+          <Input
+            placeholder="搜尋物品..."
+            prefix={<SearchOutlined />}
+            value={search}
+            onChange={handleSearchChange}
+            style={{ width: 240 }}
+            allowClear
           />
-        </Card>
-      )}
+          <Select
+            value={category}
+            onChange={setCategory}
+            options={categoryOptions}
+            style={{ width: 120 }}
+          />
+          <Select
+            value={location}
+            onChange={setLocation}
+            options={locationOptions}
+            style={{ width: 120 }}
+          />
+          <Segmented
+            value={viewMode}
+            onChange={handleViewModeChange}
+            options={[
+              { value: 'table', icon: <BarsOutlined /> },
+              { value: 'grid', icon: <AppstoreOutlined /> },
+            ]}
+          />
+        </Space>
 
-      {/* 卡片視圖 */}
-      {viewMode === 'grid' && (
-        <Row gutter={[16, 16]}>
-          {filteredData.map((item) => (
-            <Col xs={24} sm={12} md={8} lg={6} key={item.id}>
-              <Card 
-                hoverable 
-                onClick={() => handleSelectItem(item)}
-                style={{ height: '100%' }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                  <Text type="secondary" style={{ fontSize: 12 }}>{item.category}</Text>
-                  <Tag color={statusConfig[item.status].tagColor}>
-                    {statusConfig[item.status].label}
-                  </Tag>
-                </div>
-                <Title level={4} style={{ margin: '0 0 12px' }}>{item.name}</Title>
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 12 }}>
-                  <span style={{ fontSize: 32, fontWeight: 600 }}>{item.quantity}</span>
-                  <Text type="secondary">{item.unit}</Text>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
-                  <Text type="secondary">📍 {item.location}</Text>
-                  <Text type="secondary">⏱ {item.daysUntilEmpty} 天</Text>
-                </div>
-                <Progress 
-                  percent={Math.min(100, (item.daysUntilEmpty / 14) * 100)} 
-                  status={
-                    item.status === 'critical' 
-                      ? 'exception' 
-                      : item.status === 'warning' 
-                        ? 'active' 
-                        : 'success'
-                  } 
-                  showInfo={false} 
-                  size="small" 
-                />
-              </Card>
-            </Col>
-          ))}
-        </Row>
-      )}
+        {/* 表格視圖 */}
+        {viewMode === 'table' && (
+          <Card bodyStyle={{ padding: 0 }}>
+            <Table<InventoryItem>
+              columns={columns}
+              dataSource={filteredData}
+              rowKey="id"
+              onRow={(record) => ({
+                onClick: () => handleSelectItem(record),
+                style: { cursor: 'pointer' },
+              })}
+              pagination={{ pageSize: 10 }}
+            />
+          </Card>
+        )}
 
-      {/* 新增物品 Modal */}
-      <AddItemModal 
-        open={isModalOpen}
-        onClose={handleClose}      
-        onSubmit={handleSubmit}
-      />
-    </div>
+        {/* 卡片視圖 */}
+        {viewMode === 'grid' && (
+          <Row gutter={[16, 16]}>
+            {filteredData.map((item) => (
+              <Col xs={24} sm={12} md={8} lg={6} key={item.id}>
+                <Card
+                  hoverable
+                  onClick={() => handleSelectItem(item)}
+                  style={{ height: '100%' }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+                    <Text type="secondary" style={{ fontSize: 12 }}>{item.category}</Text>
+                    <Tag color={statusConfig[item.status].tagColor}>
+                      {statusConfig[item.status].label}
+                    </Tag>
+                  </div>
+                  <Title level={4} style={{ margin: '0 0 12px' }}>{item.name}</Title>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 12 }}>
+                    <span style={{ fontSize: 32, fontWeight: 600 }}>{item.quantity}</span>
+                    <Text type="secondary">{item.unit}</Text>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
+                    <Text type="secondary">📍 {item.location}</Text>
+                    <Text type="secondary">⏱ {item.daysUntilEmpty} 天</Text>
+                  </div>
+                  <Progress
+                    percent={Math.min(100, (item.daysUntilEmpty / 14) * 100)}
+                    status={
+                      item.status === 'critical'
+                        ? 'exception'
+                        : item.status === 'warning'
+                          ? 'active'
+                          : 'success'
+                    }
+                    showInfo={false}
+                    size="small"
+                  />
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        )}
+
+        {/* 新增物品 Modal */}
+        <AddItemModal
+          open={isModalOpen}
+          onClose={handleClose}
+          onSubmit={handleSubmit}
+          categories={apiCategories}
+        />
+
+        {/* 分類管理 Modal */}
+        <CategoryModal
+          open={isCategoryModalOpen}
+          onClose={() => setIsCategoryModalOpen(false)}
+          categories={apiCategories}
+          onCategoriesChange={setApiCategories}
+        />
+      </div>
+    </Spin>
   );
 };
 

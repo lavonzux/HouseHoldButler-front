@@ -25,14 +25,16 @@ import {
 } from 'antd';
 // import type { FormInstance } from 'antd';
 import type { AddItemModalProps, AddItemFormData } from '@/types';
-import { mockCategories, mockLocations, unitOptions } from '@/mockData';
+import { mockLocations, unitOptions } from '@/mockData';
 
 const { Text } = Typography;
 
 /**
  * AddItemModal 元件
  */
-const AddItemModal: React.FC<AddItemModalProps> = ({ open, onClose, onSubmit }) => {
+const AddItemModal: React.FC<AddItemModalProps> = ({ open, onClose, onSubmit, categories }) => {
+  // 將 API categories 轉換為 Select 選項
+  const categoryOptions = (categories ?? []).map(c => ({ value: c.name, label: c.name }));
   /**
    * 使用 Form.useForm 並指定泛型
    * 這樣 form 實例就會有正確的型別提示
@@ -75,8 +77,10 @@ const AddItemModal: React.FC<AddItemModalProps> = ({ open, onClose, onSubmit }) 
    */
   const handleFinish = (): void => {
     form.validateFields()
-      .then((values: AddItemFormData) => {
-        console.log('Form values:', values);
+      .then(() => {
+        // validateFields only returns mounted fields in a multi-step form.
+        // Use getFieldsValue(true) to include preserved (unmounted) fields.
+        const values = form.getFieldsValue(true) as AddItemFormData;
         onSubmit?.(values);
         handleCancel();
       })
@@ -158,7 +162,7 @@ const AddItemModal: React.FC<AddItemModalProps> = ({ open, onClose, onSubmit }) 
               >
                 <Select
                   placeholder="選擇分類"
-                  options={mockCategories.filter(c => c.value !== '全部')}
+                  options={categoryOptions}
                 />
               </Form.Item>
               <Form.Item
