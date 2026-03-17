@@ -133,49 +133,56 @@ const Reminders: React.FC = () => {
 
       {/* 庫存提醒列表 */}
       {filter != "BUDGET" && (
-        <List
-          dataSource={filteredReminders}
-          renderItem={(item: Reminder) => (
-            <Card style={{ marginBottom: 12 }}>
-              <List.Item
-                actions={[
-                  <Button size="small" icon={<CheckOutlined />} key="complete">
-                    完成
-                  </Button>,
-                ]}
+        <div>
+          {filteredReminders.map((item: Reminder) => (
+            <Card key={item.id} style={{ marginBottom: 12 }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
               >
-                <List.Item.Meta
-                  avatar={<Avatar icon={getIcon(item.reminderType)} />}
-                  title={
-                    <Space>
-                      <span>{item.Name}</span>
-                    </Space>
-                  }
-                  description={
-                    <div>
-                      <div>{item.message}</div>
-                      <Text type="secondary" style={{ fontSize: 12 }}>
-                        {item.sentAt}
-                      </Text>
-                    </div>
-                  }
-                />
-              </List.Item>
+                <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+                  <Avatar icon={getIcon(item.reminderType)} />
+                  <div>
+                    <div style={{ fontWeight: 500 }}>{item.Name}</div>
+                    <div>{item.message}</div>
+                    <Text type="secondary" style={{ fontSize: 12 }}>
+                      {item.sentAt}
+                    </Text>
+                  </div>
+                </div>
+                <Button size="small" icon={<CheckOutlined />}>
+                  完成
+                </Button>
+              </div>
             </Card>
+          ))}
+          {filteredReminders.length === 0 && (
+            <div style={{ textAlign: "center", padding: 24, color: "#999" }}>
+              暫無資料
+            </div>
           )}
-        />
+        </div>
       )}
 
       {/* 預算警示列表 */}
       {filter === "BUDGET" && (
         <>
           {/* 工具列：顯示筆數資訊 + 本頁全部已讀按鈕 */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: 12,
+            }}
+          >
             <Text type="secondary">
               {budgetAlerts.length > 0
                 ? `共 ${budgetAlerts.length} 筆通知，第 ${(budgetPage - 1) * PAGE_SIZE + 1}–${Math.min(budgetPage * PAGE_SIZE, budgetAlerts.length)} 筆`
-                : '目前沒有未讀的預算警示'
-              }
+                : "目前沒有未讀的預算警示"}
             </Text>
             {budgetAlerts.length > 0 && (
               <Button
@@ -188,23 +195,51 @@ const Reminders: React.FC = () => {
               </Button>
             )}
           </div>
- 
+
           {/* 警示列表（只渲染當前分頁資料） */}
-          <List
-            dataSource={pagedBudgetAlerts}
-            locale={{ emptyText: '目前沒有未讀的預算警示' }}
-            renderItem={(alert) => (
-              <Card style={{ marginBottom: 12 }}>
-                <List.Item
-                  actions={[
-                    alert.isRead ? (
+          <div>
+            {pagedBudgetAlerts.length === 0 ? (
+              <div style={{ textAlign: "center", padding: 24, color: "#999" }}>
+                目前沒有未讀的預算警示
+              </div>
+            ) : (
+              pagedBudgetAlerts.map((alert) => (
+                <Card key={alert.id} style={{ marginBottom: 12 }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div
+                      style={{ display: "flex", gap: 12, alignItems: "center" }}
+                    >
+                      <Avatar
+                        icon={<DollarOutlined />}
+                        style={{
+                          backgroundColor: getAlertAvatarColor(
+                            alert.alertLevel,
+                          ),
+                        }}
+                      />
+                      <div>
+                        <div style={{ fontWeight: 500 }}>
+                          {alert.categoryName}
+                        </div>
+                        <div>{getBudgetAlertMessage(alert)}</div>
+                        <Text type="secondary" style={{ fontSize: 12 }}>
+                          {new Date(alert.createdAt).toLocaleString("zh-TW")}
+                        </Text>
+                      </div>
+                    </div>
+                    {alert.isRead ? (
                       <Button
-                        key="read"
                         size="small"
                         style={{
-                          color: '#52c41a',
-                          borderColor: '#52c41a',
-                          backgroundColor: '#f6ffed',
+                          color: "#52c41a",
+                          borderColor: "#52c41a",
+                          backgroundColor: "#f6ffed",
                         }}
                         icon={<CheckOutlined />}
                         disabled
@@ -213,53 +248,30 @@ const Reminders: React.FC = () => {
                       </Button>
                     ) : (
                       <Button
-                        key="unread"
                         size="small"
                         onClick={() => markBudgetAlertAsRead(alert.id)}
                       >
                         未讀
                       </Button>
-                    ),
-                  ]}
-                >
-                  <List.Item.Meta
-                    avatar={
-                      <Avatar
-                        icon={<DollarOutlined />}
-                        style={{ backgroundColor: getAlertAvatarColor(alert.alertLevel) }}
-                      />
-                    }
-                    title={
-                      <Space>
-                        <span>{alert.categoryName}</span>
-                      </Space>
-                    }
-                    description={
-                      <div>
-                        <div>{getBudgetAlertMessage(alert)}</div>
-                        <Text type="secondary" style={{ fontSize: 12 }}>
-                          {new Date(alert.createdAt).toLocaleString('zh-TW')}
-                        </Text>
-                      </div>
-                    }
-                  />
-                </List.Item>
-              </Card>
+                    )}
+                  </div>
+                </Card>
+              ))
             )}
-          />
- 
+          </div>
+
           {/* 分頁控制：筆數不超過一頁時不顯示 */}
           {budgetAlerts.length > PAGE_SIZE && (
             <>
-              <Divider style={{ margin: '12px 0' }} />
-              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Divider style={{ margin: "12px 0" }} />
+              <div style={{ display: "flex", justifyContent: "flex-end" }}>
                 <Pagination
                   current={budgetPage}
                   pageSize={PAGE_SIZE}
                   total={budgetAlerts.length}
                   onChange={(page) => {
                     setBudgetPage(page);
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    window.scrollTo({ top: 0, behavior: "smooth" });
                   }}
                   showSizeChanger={false}
                   showTotal={(total, range) =>
