@@ -11,6 +11,7 @@ import Dashboard from '@pages/Dashboard';
 import Inventory from '@pages/Inventory';
 import ItemDetail from '@pages/ItemDetail';
 import Reminders from '@pages/Reminders';
+import Expenditures  from '@pages/Expenditures';
 import Budget from '@pages/Budget';
 import Settings from '@pages/Settings';
 import Register from '@pages/Register';
@@ -40,6 +41,7 @@ const App: React.FC = () => {
             <Route path="/inventory" element={<Inventory />} />
             <Route path="/inventory/:id" element={<ItemDetail />} />
             <Route path="/reminders" element={<Reminders />} />
+            <Route path="/expenditures" element={<Expenditures />}/>
             <Route path="/budget" element={<Budget />} />
             <Route path="/settings" element={<Settings />} />
           </Route>

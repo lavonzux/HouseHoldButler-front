@@ -85,6 +85,7 @@ export const VIEW_TITLES: Record<string, string> = {
   inventory: '庫存清單',
   detail: '物品詳情',
   reminders: '提醒事項',
+  expenditures: '支出預算',
   budget: '預算追蹤',
   settings: '設定',
 };
