@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Menu, Button, Badge, Avatar, Space, Dropdown, Tag } from 'antd';
+import { Layout, Menu, Button, Badge, Avatar, Space, Dropdown } from 'antd';
 import {
   DashboardOutlined, InboxOutlined, BellOutlined,
   DollarOutlined, SettingOutlined, MenuFoldOutlined,
   MenuUnfoldOutlined, UserOutlined, LogoutOutlined, 
-  ShoppingCartOutlined, ClockCircleOutlined
+  ShoppingCartOutlined, ClockCircleOutlined, WalletOutlined
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
@@ -23,6 +23,7 @@ const menuItems: MenuItem[] = [
   { key: '/dashboard', icon: <DashboardOutlined />, label: '總覽' },
   { key: '/inventory', icon: <InboxOutlined />, label: '庫存清單' },
   { key: '/reminders', icon: <BellOutlined />, label: '提醒事項' },
+  { key: '/expenditures', icon: <WalletOutlined  />, label: '支出清單'},
   { key: '/budget', icon: <DollarOutlined />, label: '預算追蹤' },
   { key: '/settings', icon: <SettingOutlined />, label: '設定' },
 ];
