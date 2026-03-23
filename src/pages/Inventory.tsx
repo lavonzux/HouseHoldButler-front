@@ -27,8 +27,8 @@ import {
   AppstoreOutlined,
   BarsOutlined,
 } from '@ant-design/icons';
-import type { InventoryItem, ViewMode, AddItemFormData, ApiCategory, SelectOption } from '@/types';
-import { mockLocations, unitOptions } from '@/mockData';
+import type { InventoryItem, ViewMode, AddItemFormData, ApiCategory, ApiProduct, SelectOption } from '@/types';
+import { mockLocations } from '@/mockData';
 import { useNavigate } from 'react-router-dom';
 import { statusConfig } from '@/theme';
 import AddItemModal from '@components/component/AddItemModal';
@@ -49,6 +49,7 @@ const Inventory: React.FC = () => {
 
   const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([]);
   const [apiCategories, setApiCategories] = useState<ApiCategory[]>([]);
+  const [apiProducts, setApiProducts] = useState<ApiProduct[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -61,12 +62,14 @@ const Inventory: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      const [inventories, categories] = await Promise.all([
+      const [inventories, categories, products] = await Promise.all([
         inventoryApi.getAll(),
         categoryApi.getAll(),
+        productApi.getAll(),
       ]);
       setInventoryItems(inventories.map(mapApiInventoryToItem));
       setApiCategories(categories);
+      setApiProducts(products);
     } catch (err) {
       console.error('Failed to fetch inventory data:', err);
       setError('無法載入庫存資料');
@@ -213,44 +216,22 @@ const Inventory: React.FC = () => {
   };
 
   /**
-   * 提交新增物品：先建立 Product，再建立 Inventory
+   * 提交新增庫存：從現有商品中選取後，僅建立 Inventory
    */
   const handleSubmit = async (values: AddItemFormData) => {
     try {
-      // 從 apiCategories 中找到對應的 categoryId
-      const matchedCategory = apiCategories.find(c => c.name === values.category);
-
-      // 計算 avgConsumptionRate（百分比/天）
-      const quantity = values.quantity ?? 1;
-      const avgConsumptionRate = values.consumptionRate
-        ? values.consumptionRate / quantity
-        : 0;
-
-      // Step 1: 建立 Product
-      const product = await productApi.create({
-        name: values.name,
-        categoryId: matchedCategory?.id ?? null,
-        barcode: null,
-        unit: values.unit,
-        avgConsumptionRate,
-        lowStockThreshold: 0.2,
-      });
-
-      // Step 2: 建立 Inventory
       await inventoryApi.create({
-        productId: product.id,
+        productId: values.productId,
         location: values.location || null,
-        initialQuantity: quantity,
+        initialQuantity: values.quantity ?? 1,
         nearestExpiryDate: values.expiryDate,
       });
 
       message.success('物品新增成功');
       setIsModalOpen(false);
-
-      // 重新載入清單
       await fetchData();
     } catch (err) {
-      console.error('Failed to create item:', err);
+      console.error('Failed to create inventory:', err);
       message.error('新增物品失敗，請稍後再試');
     }
   };
@@ -376,6 +357,7 @@ const Inventory: React.FC = () => {
           open={isModalOpen}
           onClose={handleClose}
           onSubmit={handleSubmit}
+          products={apiProducts}
           categories={apiCategories}
         />
 

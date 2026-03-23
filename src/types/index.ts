@@ -141,16 +141,13 @@ export interface NotificationSettings {
 }
 
 /**
- * 新增物品表單資料
+ * 新增庫存表單資料
  */
 export interface AddItemFormData {
-  name: string;
-  category: string;
-  quantity: number | null;
-  unit: string;
+  productId: string;
   location: string;
+  quantity: number | null;
   expiryDate: string | null;
-  consumptionRate: number | null;
 }
 
 // ============================================
@@ -174,6 +171,7 @@ export interface ApiProduct {
   id: string;
   name: string;
   categoryId: string | null;
+  barcode: string | null;
   unit: string | null;
   avgConsumptionRate: number;
   lowStockThreshold: number;
@@ -201,6 +199,18 @@ export interface ApiInventory {
  * 建立 Product 的請求 DTO
  */
 export interface CreateProductApiRequest {
+  name: string;
+  categoryId: string | null;
+  barcode: string | null;
+  unit: string | null;
+  avgConsumptionRate: number;
+  lowStockThreshold: number;
+}
+
+/**
+ * 更新 Product 的請求 DTO
+ */
+export interface UpdateProductApiRequest {
   name: string;
   categoryId: string | null;
   barcode: string | null;
@@ -255,7 +265,8 @@ export interface AddItemModalProps {
   open: boolean;
   onClose: () => void;
   onSubmit?: (data: AddItemFormData) => void;
-  categories?: ApiCategory[];
+  products: ApiProduct[];
+  categories: ApiCategory[];
 }
 
 /**

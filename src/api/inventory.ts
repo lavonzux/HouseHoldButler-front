@@ -4,6 +4,7 @@ import type {
   ApiProduct,
   ApiCategory,
   CreateProductApiRequest,
+  UpdateProductApiRequest,
   CreateInventoryApiRequest,
 } from '@/types'
 
@@ -33,6 +34,19 @@ export const productApi = {
   create: async (data: CreateProductApiRequest): Promise<ApiProduct> => {
     const response = await apiClient.post<ApiProduct>('/api/products', data)
     return response.data
+  },
+
+  update: async (id: string, data: UpdateProductApiRequest): Promise<ApiProduct> => {
+    const response = await apiClient.put<ApiProduct>(`/api/products/${id}`, data)
+    return response.data
+  },
+
+  delete: async (id: string): Promise<void> => {
+    await apiClient.delete(`/api/products/${id}`)
+  },
+
+  forceDelete: async (id: string): Promise<void> => {
+    await apiClient.delete(`/api/products/${id}/force`)
   },
 }
 

@@ -14,6 +14,7 @@ import Reminders from '@pages/Reminders';
 import Expenditures  from '@pages/Expenditures';
 import Budget from '@pages/Budget';
 import Settings from '@pages/Settings';
+import Products from '@pages/Products';
 import Register from '@pages/Register';
 import NotFound from '@pages/NotFound';
 
@@ -43,6 +44,7 @@ const App: React.FC = () => {
             <Route path="/reminders" element={<Reminders />} />
             <Route path="/expenditures" element={<Expenditures />}/>
             <Route path="/budget" element={<Budget />} />
+            <Route path="/products" element={<Products />} />
             <Route path="/settings" element={<Settings />} />
           </Route>
         </Route>
