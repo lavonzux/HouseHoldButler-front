@@ -83,6 +83,7 @@ export const SIDER_COLLAPSED_WIDTH = 80 as const;
 export const VIEW_TITLES: Record<string, string> = {
   dashboard: '總覽',
   inventory: '庫存清單',
+  products: '商品管理',
   detail: '物品詳情',
   reminders: '提醒事項',
   expenditures: '支出預算',

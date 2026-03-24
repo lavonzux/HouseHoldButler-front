@@ -50,10 +50,10 @@ export type ViewName = 'dashboard' | 'inventory' | 'detail' | 'reminders' | 'bud
  * 使用 interface 定義物件結構
  */
 export interface InventoryItem {
-  /** 唯一識別碼 */
-  id: number;
+  /** 唯一識別碼 (GUID) */
+  id: string;
   /** Ant Design Table 需要的 key */
-  key: number;
+  key: string;
   /** 物品名稱 */
   name: string;
   /** 分類 */
@@ -141,16 +141,92 @@ export interface NotificationSettings {
 }
 
 /**
- * 新增物品表單資料
+ * 新增庫存表單資料
  */
 export interface AddItemFormData {
-  name: string;
-  category: string;
-  quantity: number | null;
-  unit: string;
+  productId: string;
   location: string;
+  quantity: number | null;
   expiryDate: string | null;
-  consumptionRate: number | null;
+}
+
+// ============================================
+// API 回應型別（對應後端 JSON）
+// ============================================
+
+/**
+ * 後端 Category 實體
+ */
+export interface ApiCategory {
+  id: string;
+  name: string;
+  parentId: string | null;
+  icon: string | null;
+}
+
+/**
+ * 後端 Product 實體
+ */
+export interface ApiProduct {
+  id: string;
+  name: string;
+  categoryId: string | null;
+  barcode: string | null;
+  unit: string | null;
+  avgConsumptionRate: number;
+  lowStockThreshold: number;
+  category: ApiCategory | null;
+}
+
+/**
+ * 後端 Inventory 實體
+ */
+export interface ApiInventory {
+  id: string;
+  productId: string;
+  location: string | null;
+  initialQuantity: number;
+  currentQuantity: number;
+  estimatedDepletionDate: string | null;
+  nearestExpiryDate: string | null;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  product: ApiProduct;
+}
+
+/**
+ * 建立 Product 的請求 DTO
+ */
+export interface CreateProductApiRequest {
+  name: string;
+  categoryId: string | null;
+  barcode: string | null;
+  unit: string | null;
+  avgConsumptionRate: number;
+  lowStockThreshold: number;
+}
+
+/**
+ * 更新 Product 的請求 DTO
+ */
+export interface UpdateProductApiRequest {
+  name: string;
+  categoryId: string | null;
+  barcode: string | null;
+  unit: string | null;
+  avgConsumptionRate: number;
+  lowStockThreshold: number;
+}
+
+/**
+ * 建立 Inventory 的請求 DTO
+ */
+export interface CreateInventoryApiRequest {
+  productId: string;
+  location: string | null;
+  initialQuantity: number;
+  nearestExpiryDate: string | null;
 }
 
 // ============================================
@@ -189,6 +265,8 @@ export interface AddItemModalProps {
   open: boolean;
   onClose: () => void;
   onSubmit?: (data: AddItemFormData) => void;
+  products: ApiProduct[];
+  categories: ApiCategory[];
 }
 
 /**
