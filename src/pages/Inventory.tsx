@@ -29,10 +29,10 @@ import {
 } from '@ant-design/icons';
 import type { InventoryItem, ViewMode, AddItemFormData, ApiCategory, ApiProduct, SelectOption } from '@/types';
 import { mockLocations } from '@/mockData';
-import { useNavigate } from 'react-router-dom';
 import { statusConfig } from '@/theme';
 import AddItemModal from '@components/component/AddItemModal';
 import CategoryModal from '@components/component/CategoryModal';
+import InventoryDetailModal from '@components/component/InventoryDetailModal';
 import { inventoryApi, productApi, categoryApi } from '@api/inventory';
 import { mapApiInventoryToItem } from '@/utils/inventoryMapper';
 
@@ -52,8 +52,6 @@ const Inventory: React.FC = () => {
   const [apiProducts, setApiProducts] = useState<ApiProduct[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
-  const navigate = useNavigate();
 
   /**
    * 從 API 載入資料
@@ -201,11 +199,14 @@ const Inventory: React.FC = () => {
   };
 
   const handleSelectItem = (item: InventoryItem) => {
-    navigate(`/inventory/${item.id}`);
+    setSelectedInventoryId(item.id);
+    setIsDetailModalOpen(true);
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const [selectedInventoryId, setSelectedInventoryId] = useState<string | null>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
   const handleAddNew = () => {
     setIsModalOpen(true);
@@ -367,6 +368,13 @@ const Inventory: React.FC = () => {
           onClose={() => setIsCategoryModalOpen(false)}
           categories={apiCategories}
           onCategoriesChange={setApiCategories}
+        />
+
+        {/* 庫存詳情 Modal */}
+        <InventoryDetailModal
+          open={isDetailModalOpen}
+          inventoryId={selectedInventoryId}
+          onClose={() => setIsDetailModalOpen(false)}
         />
       </div>
     </Spin>
