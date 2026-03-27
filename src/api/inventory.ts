@@ -23,6 +23,10 @@ export const inventoryApi = {
     const response = await apiClient.post<ApiInventory>('/api/inventories', data)
     return response.data
   },
+
+  updateNote: async (id: string, note: string): Promise<void> => {
+    await apiClient.patch(`/api/inventories/${id}`, { note })
+  },
 }
 
 export const productApi = {

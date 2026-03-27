@@ -34,5 +34,6 @@ export function mapApiInventoryToItem(inv: ApiInventory): InventoryItem {
     location: inv.location ?? '',
     lastUpdated: inv.updatedAt,
     status,
+    note: inv.note,
   }
 }

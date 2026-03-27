@@ -74,6 +74,8 @@ export interface InventoryItem {
   lastUpdated: string;
   /** 狀態 */
   status: InventoryStatus;
+  /** 備註 */
+  note?: string;
 }
 
 /**
@@ -193,6 +195,7 @@ export interface ApiInventory {
   createdAt: string;
   updatedAt: string;
   product: ApiProduct;
+  note?: string;
 }
 
 /**
