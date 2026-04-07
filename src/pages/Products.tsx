@@ -21,9 +21,10 @@ import {
   Descriptions,
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { PlusOutlined, SearchOutlined, EditOutlined, DeleteOutlined, WarningOutlined } from '@ant-design/icons';
+import { PlusOutlined, SearchOutlined, EditOutlined, DeleteOutlined, WarningOutlined, HistoryOutlined } from '@ant-design/icons';
 import type { ApiProduct, ApiInventory, ApiCategory, SelectOption, UpdateProductApiRequest } from '@/types';
 import { productApi, categoryApi, inventoryApi } from '@api/inventory';
+import ProductHistoryModal from '@/components/component/ProductHistoryModal';
 
 const { Title, Text } = Typography;
 
@@ -49,6 +50,9 @@ const Products: React.FC = () => {
   const [editingProduct, setEditingProduct] = useState<ApiProduct | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [form] = Form.useForm<ProductFormValues>();
+
+  // 歷史紀錄 Modal state
+  const [historyTarget, setHistoryTarget] = useState<ApiProduct | null>(null);
 
   // 刪除確認 Modal state
   const [deleteTarget, setDeleteTarget] = useState<ApiProduct | null>(null);
@@ -253,6 +257,14 @@ const Products: React.FC = () => {
           <Button
             type="link"
             size="small"
+            icon={<HistoryOutlined />}
+            onClick={() => setHistoryTarget(record)}
+          >
+            紀錄
+          </Button>
+          <Button
+            type="link"
+            size="small"
             icon={<EditOutlined />}
             onClick={() => handleOpenEdit(record)}
           >
@@ -375,6 +387,13 @@ const Products: React.FC = () => {
             </Form.Item>
           </Form>
         </Modal>
+
+        {/* 歷史紀錄 Modal */}
+        <ProductHistoryModal
+          open={historyTarget !== null}
+          product={historyTarget}
+          onClose={() => setHistoryTarget(null)}
+        />
 
         {/* 刪除確認 Modal */}
         <Modal
