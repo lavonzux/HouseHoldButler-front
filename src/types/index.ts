@@ -199,6 +199,21 @@ export interface ApiInventory {
 }
 
 /**
+ * 後端 ProductHistoryEntryDto — 商品歷史時間軸的單筆紀錄
+ */
+export interface ProductHistoryEntry {
+  entryType: 'PURCHASE' | 'DEPLETE' | 'ADJUST' | 'EXPIRE';
+  occurredAt: string;
+  inventoryId: string;
+  inventoryStatus: string;
+  initialQuantity: number | null;
+  location: string | null;
+  quantityDelta: number | null;
+  source: string | null;
+  note: string | null;
+}
+
+/**
  * 建立 Product 的請求 DTO
  */
 export interface CreateProductApiRequest {

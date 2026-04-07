@@ -3,14 +3,15 @@ import type {
   ApiInventory,
   ApiProduct,
   ApiCategory,
+  ProductHistoryEntry,
   CreateProductApiRequest,
   UpdateProductApiRequest,
   CreateInventoryApiRequest,
 } from '@/types'
 
 export const inventoryApi = {
-  getAll: async (): Promise<ApiInventory[]> => {
-    const response = await apiClient.get<ApiInventory[]>('/api/inventories')
+  getAll: async (params?: { productId?: string }): Promise<ApiInventory[]> => {
+    const response = await apiClient.get<ApiInventory[]>('/api/inventories', { params })
     return response.data
   },
 
@@ -51,6 +52,11 @@ export const productApi = {
 
   forceDelete: async (id: string): Promise<void> => {
     await apiClient.delete(`/api/products/${id}/force`)
+  },
+
+  getHistory: async (id: string): Promise<ProductHistoryEntry[]> => {
+    const response = await apiClient.get<ProductHistoryEntry[]>(`/api/products/${id}/history`)
+    return response.data
   },
 }
 
